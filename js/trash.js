@@ -1,0 +1,1 @@
+// note creation: keys: ['note/octave', ...], duration: 'w,h,q,8,16,32'
