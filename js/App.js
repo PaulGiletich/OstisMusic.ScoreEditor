@@ -1,24 +1,35 @@
-App = Backbone.View.extend({
-    el: $("#view"),
-    notesView: new NotesView(),
-    notesModel: new NotesModel(),
-    highlightedNote: undefined,
-    events: {
-        "click #add-note": "addNote",
-        "click #add-bar": "addBar",
-        "click #score" :"scoreClick"
-    },
-    addNote : function(){
-        this.notesModel.addNote([$('input[name=key]').val()], $('input[name=duration]').val());
-        this.notesView.draw();
-    },
-    addBar : function(){
-        this.notesModel.addBar();
-        this.notesView.draw();
-    },
-    scoreClick: function(ev){
-        var coords = this.notesView.canvas.relMouseCoords(ev);
-        this.highlightedNote = this.notesView.findNote(coords);
-        this.notesView.draw();
+OSTISMusic.App = (function(){
+    function App(){
+        this.init();
     }
-});
+
+    App.prototype = {
+        init: function(){
+            this.view = new OSTISMusic.View();
+            this.vextab = new Vex.Flow.VexTab(this.view.artist);
+
+            $("#notation").keyup(this.update.bind(this));
+            $('#view').click(this.scoreClick.bind(this));
+
+            this.update();
+        },
+        scoreClick: function(e){
+            var coords = this.view.canvas.relMouseCoords(e);
+            this.highlightedNote = this.view.findNote(coords);
+        },
+        update: function(){
+            try {
+                this.vextab.reset();
+                this.view.artist.reset();
+                this.vextab.parse($("#notation").val());
+                this.view.update();
+                $("#error").text("");
+            } catch (e) {
+                console.log(e);
+                $("#error").text(e.message);
+            }
+        }
+    };
+
+    return App;
+})();

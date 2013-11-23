@@ -1,0 +1,16 @@
+body {
+    padding: 20px;
+}
+
+#error {
+    font-family: Courier, monospace;
+    font-size: 12px;
+    color: red;
+}
+
+#notation {
+    width: 500px;
+    height: 300px;
+    font-family: Courier, monospace;
+    font-size: 12px;
+}

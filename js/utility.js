@@ -16,3 +16,12 @@ HTMLCanvasElement.prototype.relMouseCoords = function relMouseCoords(event){
 
     return {x:canvasX, y:canvasY}
 };
+
+OSTISMusic.Util = {};
+
+OSTISMusic.Util.contains = function contains(rect, point){
+    return (rect.x < point.x  &&
+        rect.y < point.y &&
+        rect.x + rect.w > point.x &&
+        rect.y + rect.h > point.y);
+};
