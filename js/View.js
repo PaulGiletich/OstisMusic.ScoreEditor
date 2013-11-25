@@ -5,6 +5,7 @@ function View(){
     };
 
     View.prototype = {
+
         init: function(){
             this.canvas = $("#canvas")[0];
             this.hoverCanvas = $("#hoverCanvas")[0];
@@ -40,6 +41,7 @@ function View(){
             }
             return null;
         },
+
         hoverRect: function(rect){
             this.clearHoverCanvas();
             var ctx=this.hoverCanvas.getContext("2d");
@@ -48,6 +50,7 @@ function View(){
             ctx.roundRect(rect.x,rect.y,
                 rect.w,rect.h, true, 8);
         },
+
         clearHoverCanvas: function(){
             var ctx=this.hoverCanvas.getContext("2d");
             ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);

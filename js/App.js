@@ -4,6 +4,7 @@ OSTISMusic.App = (function(){
     }
 
     App.prototype = {
+
         init: function(){
             this.view = new OSTISMusic.View();
             this.vextab = new Vex.Flow.VexTab(this.view.artist);
@@ -14,14 +15,17 @@ OSTISMusic.App = (function(){
 
             this.update();
         },
+
         scoreClick: function(e){
             var coords = this.view.canvas.relMouseCoords(e);
             this.highlightedNote = this.view.findNote(coords);
         },
+
         mouseMove: function(e){
             var coords = this.view.canvas.relMouseCoords(e);
             this.highlightNote(this.view.findNote(coords));
         },
+
         highlightNote: function(note){
             if(note){
                 this.view.hoverRect(note.view.getBoundingBox());
@@ -30,6 +34,7 @@ OSTISMusic.App = (function(){
                 this.view.clearHoverCanvas();
             }
         },
+
         update: function(){
             try {
                 this.vextab.reset();
