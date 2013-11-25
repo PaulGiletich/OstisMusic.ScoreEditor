@@ -14,3 +14,6 @@ body {
     font-family: Courier, monospace;
     font-size: 12px;
 }
+
+.canvas-layers { position:relative; width:600px; height:400px }
+.canvas-layers canvas { position:absolute; top:0; left:0 }

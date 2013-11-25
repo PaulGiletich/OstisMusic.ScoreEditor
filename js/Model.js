@@ -1,15 +1,3 @@
-function Model(){
-    this.notes = [];
-}
-
-Model.prototype.addNote = function(keys, duration){
-    this.notes.push(new Vex.Flow.StaveNote({ keys: keys, duration: duration }));
-};
-
-Model.prototype.addBar = function(){
-    this.notes.push(new Vex.Flow.BarNote());
-};
-
 OSTISMusic.Note = function (key, octave){
     this.key = key;
     this.octave = octave;
@@ -19,11 +7,40 @@ OSTISMusic.Note = function (key, octave){
     }
 };
 
-function Chord(duration){
+OSTISMusic.Chord = function (duration, notes){
     this.notes = [];
+    if(notes){
+        this.notes = notes.slice();
+    }
     this.duration = duration;
 
     this.toString = function(){
-        return ':' + this.duration + " " + this.notes.join('.');
+        var result = ':' + this.duration + " ";
+        if(this.notes.length > 1){
+            result += "(" + this.notes.join('.') + ")";
+        }
+        else {
+            result += this.notes[0];
+        }
+        return  result;
     }
-}
+};
+
+OSTISMusic.Voice = function(chords){
+    this.chords = [];
+    if(chords){
+        this.chords = chords.slice();
+    }
+
+    this.toString = function(){
+        return "voice\n\tnotes " + this.chords.join(' ');
+    }
+};
+
+OSTISMusic.Song = function(){
+    this.voices = [];
+
+    this.toString = function(){
+        return "tabstave notation=true tablature=false\n" + this.voices.join('\n');// there will be many tabstaves
+    }
+};
