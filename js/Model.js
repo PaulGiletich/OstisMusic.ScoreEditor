@@ -44,3 +44,6 @@ OSTISMusic.Song = function(){
         return "tabstave notation=true tablature=false\n" + this.voices.join('\n');// there will be many tabstaves
     }
 };
+
+//TODO: iterator
+//TODO: fixed width for every note (maybe find in vextab artist)

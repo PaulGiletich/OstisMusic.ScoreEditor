@@ -101,3 +101,7 @@ CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, out
         this.fill();
     }
 };
+
+Array.prototype.insert = function(index, item){
+    this.splice(index, 0, item);
+};
