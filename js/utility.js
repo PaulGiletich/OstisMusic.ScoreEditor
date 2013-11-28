@@ -15,6 +15,20 @@ OSTISMusic.Util.enlarge = function enlarge(rect, amount){
 };
 
 
+OSTISMusic.Util.insertToArray = function(arr, index, item){
+    arr = arr.splice(index, 0, item);
+};
+
+OSTISMusic.Util.numberToNote = {
+    0: "C",
+    1: "D",
+    2: "E",
+    3: "F",
+    4: "G",
+    5: "A",
+    6: "B"
+};
+
 HTMLCanvasElement.prototype.relMouseCoords = function (event){
     var totalOffsetX = 0;
     var totalOffsetY = 0;
@@ -32,35 +46,6 @@ HTMLCanvasElement.prototype.relMouseCoords = function (event){
     canvasY = event.pageY - totalOffsetY;
 
     return {x:canvasX, y:canvasY}
-};
-
-CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius, fill, stroke) {
-    if (typeof fill == "undefined" ) {
-        fill = true;
-    }
-    if (typeof stroke == "undefined" ) {
-        stroke = false;
-    }
-    if (typeof radius === "undefined") {
-        radius = 5;
-    }
-    this.beginPath();
-    this.moveTo(x + radius, y);
-    this.lineTo(x + width - radius, y);
-    this.quadraticCurveTo(x + width, y, x + width, y + radius);
-    this.lineTo(x + width, y + height - radius);
-    this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    this.lineTo(x + radius, y + height);
-    this.quadraticCurveTo(x, y + height, x, y + height - radius);
-    this.lineTo(x, y + radius);
-    this.quadraticCurveTo(x, y, x + radius, y);
-    this.closePath();
-    if (stroke) {
-        this.stroke();
-    }
-    if (fill) {
-        this.fill();
-    }
 };
 
 CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, outerRect, radius, fill, stroke) {
@@ -100,8 +85,4 @@ CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, out
     if (fill) {
         this.fill();
     }
-};
-
-Array.prototype.insert = function(index, item){
-    this.splice(index, 0, item);
 };

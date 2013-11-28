@@ -151,7 +151,8 @@ class Vex.Flow.Artist
         formatter.joinVoices(text_voices)
         format_voices = format_voices.concat(text_voices)
 
-      formatter.formatToStave(format_voices, format_stave, {align_rests: align_rests}) unless _.isEmpty(format_voices)
+      #formatter.formatToStave(format_voices, format_stave, {align_rests: align_rests}) unless _.isEmpty(format_voices)
+      formatter.format(format_voices, )
 
       _.each(tab_voices, (voice) -> voice.draw(ctx, tab_stave)) if tab?
       _.each(score_voices, (voice) -> voice.draw(ctx, score_stave)) if score?

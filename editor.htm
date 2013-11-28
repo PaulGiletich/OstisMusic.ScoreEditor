@@ -11,6 +11,10 @@
     <script src="js/libs/vextab.js"></script>
     <script src="js/libs/artist.js"></script>
 
+    <script src="js/libs/midi-js/MIDI.min.js"></script>
+    <script src="js/libs/midi-js/inc/Base64.js" type="text/javascript"></script>
+    <script src="js/libs/midi-js/inc/base64binary.js" type="text/javascript"></script>
+
 </head>
 
 <body>
@@ -23,15 +27,16 @@
 <div class="canvas-layers">
     <canvas id="canvas"></canvas>
     <canvas id='hoverCanvas'></canvas>
-    <!--<canvas class="vextab-player" width="675" height="112" id="view-23" style="position: absolute; left: 0px; top: 0px;"></canvas>-->
-    <div id="error"></div>
+    <canvas id='selectionCanvas'></canvas>
 </div>
+<div id="error"></div>
 </div>
 </div>
 <script src="js/ostismusic.js"></script>
 <script src="js/utility.js"></script>
 <script src="js/model.js"></script>
 <script src="js/view.js"></script>
+<script src="js/player.js"></script>
 <script src="js/editor.js"></script>
 <script src="js/main.js"></script>
 </body>

@@ -7,6 +7,24 @@ OSTISMusic.Note = function (key, octave){
     }
 };
 
+OSTISMusic.BarNote = function (type){
+    var types = {
+        "SINGLE": "|",
+        "DOUBLE": "=||",
+        "END"   : "=|="
+    };
+
+    if(!type in types){
+        throw "Incorrect bar type";
+    }
+
+    this.type = type;
+
+    this.toString = function(){
+        return types[this.type];
+    }
+};
+
 OSTISMusic.Chord = function (duration, notes){
     this.notes = [];
     if(notes){
@@ -23,6 +41,17 @@ OSTISMusic.Chord = function (duration, notes){
             result += this.notes[0];
         }
         return  result;
+    }
+};
+
+OSTISMusic.Takt = function(chords){
+    this.chords = [];
+    if(chords){
+        this.chords = chords.slice();
+    }
+
+    this.toString = function(){
+        return "voice\n\tnotes " + this.chords.join(' ');
     }
 };
 
@@ -44,6 +73,3 @@ OSTISMusic.Song = function(){
         return "tabstave notation=true tablature=false\n" + this.voices.join('\n');// there will be many tabstaves
     }
 };
-
-//TODO: iterator
-//TODO: fixed width for every note (maybe find in vextab artist)
