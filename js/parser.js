@@ -1,61 +1,68 @@
 OSTISMusic.Parser = (function(){
-    function Parser(){
-        this.init();
+    function Parser(view){
+        this.view = view;
     }
 
     Parser.prototype = {
-        init: function(){
-        },
 
         parse: function(song){
-            var result = "\ntabstave notation=true tablature=false\nvoice\nnotes ";
+            var result = "";
 
-            var line_notes = 0;
-
-            for(var i = 0; i < song.tickables.length; i++){
-                var tickable = song.tickables[i];
-
-                if(tickable instanceof OSTISMusic.Chord){
-                    result += this.parseChord(tickable);
-                }
+            var fillness = 0;
+            var staveNotes = [];
+            song.eachNote(function(tickable, index){
                 if(tickable instanceof OSTISMusic.BarNote){
-                    result += tickable.toString();
+                    staveNotes.push(tickable.toString());
+                }
+                if(tickable instanceof OSTISMusic.Chord){
+                    staveNotes.push(parseChord(tickable));
+                    fillness += 1/tickable.duration;
                 }
 
-                if(++line_notes == 10 && i != song.tickables.length-1){
-                    result += "\ntabstave notation=true clef=none tablature=false\nvoice\nnotes ";
-                    line_notes = 0;
+                if(staveNotes.length == this.view.notesPerLine && index != song.tickables.length-1){
+                    result += makeStave(staveNotes, this.view.getWidth());
+                    staveNotes = [];
                 }
-                result += " ";
-            }
-            if(line_notes < 10) {
-                result += ":1 ##";
-            }
+
+            }.bind(this));
+            result += makeStave(staveNotes, this.view.getWidth() * (staveNotes.length/this.view.notesPerLine));
             return result;
-        },
-
-        parseChord: function(chord){
-            var result = ":" + chord.duration + " ";
-
-            var notes = [];
-            for(var ni = 0; ni < chord.notes.length; ni++){
-                var note = chord.notes[ni];
-                notes.push(this.parseNote(note));
-            }
-
-            if(notes.length > 1){
-                result += "(" + notes.join(".") + ")";
-            }
-            else {
-                result += notes[0];
-            }
-            return result;
-        },
-
-        parseNote: function(note){
-            return note.key + "/" + note.octave;
         }
     };
+
+    function makeStave(staveNotes, width){
+        if(staveNotes.length == 0){
+            return "";
+        }
+        var result = "\n\noptions " +
+            "player=true" +
+            " width=" + width;
+        result += "\ntabstave notation=true clef=none tablature=false\nvoice\nnotes ";
+        result += staveNotes.join(" ");
+        return result;
+    }
+
+    function parseChord(chord){
+        var result = ":" + chord.duration + " ";
+
+        var notes = [];
+        for(var ni = 0; ni < chord.notes.length; ni++){
+            var note = chord.notes[ni];
+            notes.push(parseNote(note));
+        }
+
+        if(notes.length > 1){
+            result += "(" + notes.join(".") + ")";
+        }
+        else {
+            result += notes[0];
+        }
+        return result;
+    }
+
+    function parseNote(note){
+        return note.key + "/" + note.octave;
+    }
 
     return Parser;
 })();

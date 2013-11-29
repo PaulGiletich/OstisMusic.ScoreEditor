@@ -1,12 +1,31 @@
 body {
-    padding: 20px;
+    padding: 10px 10px 0;
+    background-color: #808080;
+    overflow: hidden;
+    height: 77%;
+    /*todo discover how to fill height*/
 }
 
-#error {
-    font-family: Courier, monospace;
-    font-size: 12px;
-    color: red;
+/*div #view > div .ui, #view{*/
+    /*margin:0; padding: 0; border: 0;*/
+/*}*/
+
+#view {
+    max-width: 1000px;
+    margin:0 auto;
+    position: relative;
+    background-color: lightgray;
+    box-shadow: 0 0 20px rgb(61, 61, 61);
 }
 
-.canvas-layers { position:relative; width:600px; height:400px }
-.canvas-layers canvas { position:absolute; top:0; left:0 }
+.canvas-layers { max-width: 800px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 50px auto;
+
+    position:relative;
+    width:80%; height: 100%;
+    box-shadow: 0 0 20px #888888;
+    background-color: #ffffff;
+}
+.canvas-layers canvas { margin:50px; position:absolute; top:0; left:0 }

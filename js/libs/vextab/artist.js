@@ -230,7 +230,7 @@
       var LOGO, articulation, ctx, setBar, stave, voices, width, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
       L("Render: ", this.options);
       this.closeBends();
-      renderer.resize(this.customizations.width * this.customizations.scale, (this.last_y + this.options.bottom_spacing) * this.customizations.scale);
+      renderer.resize(renderer.element.width, (this.last_y + this.options.bottom_spacing) * this.customizations.scale);
       ctx = renderer.getContext();
       ctx.scale(this.customizations.scale, this.customizations.scale);
       ctx.clear();
@@ -239,10 +239,10 @@
       setBar = function(stave, notes) {
         var last_note;
         last_note = _.last(notes);
-        if (last_note instanceof Vex.Flow.BarNote) {
-          notes.pop();
-          return stave.setEndBarType(last_note.getType());
-        }
+//        if (last_note instanceof Vex.Flow.BarNote) {
+//          notes.pop();
+//          return stave.setEndBarType(last_note.getType());
+//        }
       };
       _ref = this.staves;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
