@@ -64,7 +64,7 @@
             }
             break;
           case "clef":
-            clefs = ["treble", "bass", "tenor", "alto", "percussion"];
+            clefs = ["treble", "bass", "tenor", "alto", "percussion", "none"];
             if (_ref1 = option.value, __indexOf.call(clefs, _ref1) < 0) {
               throw error("'clef' must be one of " + (clefs.join(', ')));
             }

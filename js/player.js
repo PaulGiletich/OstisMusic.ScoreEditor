@@ -7,7 +7,7 @@ OSTISMusic.Player = (function(){
 
         init: function(){
             this.volume = 127;
-            this.wholeNoteDuration = 4;
+            this.wholeNoteDuration = 4;//seconds
 
             console.log("loading player");
             MIDI.loadPlugin({
@@ -18,7 +18,6 @@ OSTISMusic.Player = (function(){
                     console.log("player ready");
                 }
             });
-
         },
 
         playChord: function(chord){

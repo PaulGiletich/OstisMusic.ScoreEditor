@@ -1,8 +1,10 @@
 OSTISMusic.View = (function(){
 
-function View(){
+    function View(){
         this.init();
     };
+
+    var artist = new Vex.Flow.Artist(10, 10, 600, {});
 
     View.prototype = {
 
@@ -12,63 +14,83 @@ function View(){
             this.selectionCanvas = $("#selectionCanvas")[0];
             this.renderer = new Vex.Flow.Renderer(this.canvas, Vex.Flow.Renderer.Backends.CANVAS);
             Vex.Flow.Artist.NOLOGO = true;
-            this.artist = new Vex.Flow.Artist(10, 10, 600, {});
+            //artist = new Vex.Flow.Artist(10, 10, 600, {});
             this.selectedNote = null;
         },
 
         update: function(){
-            this.artist.render(this.renderer);
+            artist.render(this.renderer);
             this.hoverCanvas.width = this.selectionCanvas.width = this.canvas.width;
             this.hoverCanvas.height = this.selectionCanvas.height  = this.canvas.height;
+        },
+
+        eachNote: function(callback){
+            var curr_i = -1;
+
+            for (var si = 0; si < artist.staves.length; si++){
+                var stave = artist.staves[si];
+
+                for (var vi = 0; vi < stave.note_voices.length; vi++){
+                    var voice = stave.note_voices[vi];
+
+                    for (var ni = 0; ni < voice.length; ni++){
+                        var note = voice[ni];
+
+                        curr_i++;
+                        var isEnough = callback(note, curr_i);
+                        if (isEnough) {
+                            return;
+                        }
+                    }
+                }
+            }
         },
 
         findNote: function(point){
             var contains = OSTISMusic.Util.contains;
             var enlarge = OSTISMusic.Util.enlarge;
 
-            var stave = this.findStave(point);
-            if(!stave) return null;
-
-            for (var j = 0; j < stave.note_voices.length; j++){
-                var voice = stave.note_voices[j];
-                for (var inote = 0; inote < voice.length; inote++){
-                    var note = voice[inote];
-                    if(contains(enlarge(note.getBoundingBox(), 8), point)){
-                        return {index: inote, view: note, model: app.song.voices[0].chords[inote]};
-                    }
+            var result = null;
+            this.eachNote(function(note, index){
+                if(contains(enlarge(note.getBoundingBox(), 8), point)){
+                    result = {index: index, view: note};
+                    return true;
                 }
-            }
-            return null;
+                return false;
+            });
+            return result;
         },
 
         findPreviousNote: function(point){
             var stave = this.findStave(point);
             if(!stave) return null;
-            var lastNote;
 
-            for(var j = 0; j < stave.note_voices.length; j++){
-                var voice = stave.note_voices[j];
-                for (var inote = 0; inote < voice.length; inote++){
-                    var note = voice[inote];
-                    if (note.getAbsoluteX() > point.x) {
-                        return lastNote;
-                    }
-                    lastNote = {index: inote, view: note, model: app.song.voices[0].chords[inote]};
+            var prevNote = null;
+            this.eachNote(function(note, index){
+                if (note.getStave() == stave.note && note.getAbsoluteX() > point.x) {
+                    return true;
                 }
-            }
-            return null;
+                //this happens in the end of line, next note x is not greater, but note is actually previous
+                if (prevNote && prevNote.view.getStave() == stave.note && note.getStave() != stave.note) {
+                    return true;
+                }
+                prevNote =  {index: index, view: note};
+                return false;
+            });
+            return prevNote;
         },
 
         findStave: function(point){
             var contains = OSTISMusic.Util.contains;
 
-            for (var i = 0; i < this.artist.staves.length; i++){
-                var stave = this.artist.staves[i];
+            for (var i = 0; i < artist.staves.length; i++){
+                var stave = artist.staves[i];
                 var boundingBox = stave.note.getBoundingBox();
                 if(contains(boundingBox, point)){
                     return stave;
                 }
             }
+            return null;
         },
 
         getNewNoteByPos: function(point){
@@ -79,7 +101,6 @@ function View(){
                     return new OSTISMusic.Note(OSTISMusic.Util.numberToNote[note % 7], Math.floor(note/7));
                 }
                 note--;
-                //stave.getYForNote(MIDI.noteToKey[i])
             }
 
             var line = this.getLineByPos(point);
@@ -110,21 +131,25 @@ function View(){
 
         setSelectedNote: function(note){
             this.selectedNote = note;
-            this.updateSelection();
+            updateSelection();
         },
 
-        updateSelection: function(){
-            var ctx=this.selectionCanvas.getContext("2d");
-            ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
-            if(!this.selectedNote) return;
-
-            var rect = this.selectedNote.view.getBoundingBox();
-            ctx.globalAlpha = 0.3;
-            ctx.fillStyle="#0000FF";
-            ctx.roundRect(rect.x,rect.y,
-            rect.w,rect.h, true, 6);
+        getArtist: function(){
+            return artist;
         }
     };
+
+    function updateSelection(){
+        var ctx=this.selectionCanvas.getContext("2d");
+        ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
+        if(!this.selectedNote) return;
+
+        var rect = this.selectedNote.view.getBoundingBox();
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle="#0000FF";
+        ctx.roundRect(rect.x,rect.y,
+            rect.w,rect.h, true, 6);
+    }
 
     return View;
 })();

@@ -1250,16 +1250,22 @@
       note_stave = null;
       tabstave_start_x = 40;
       if (opts.notation === "true") {
-        note_stave = new Vex.Flow.Stave(this.x, this.last_y, this.customizations.width - 20).addClef(opts.clef).addKeySignature(opts.key);
+        note_stave = new Vex.Flow.Stave(this.x, this.last_y, this.customizations.width - 20).addKeySignature(opts.key);
+        if (opts.clef !== "none") {
+          note_stave.addClef(opts.clef);
+        }
         if (opts.time != null) {
           note_stave.addTimeSignature(opts.time);
         }
         this.last_y += note_stave.getHeight() + this.options.note_stave_lower_spacing + parseInt(this.customizations["stave-distance"], 10);
         tabstave_start_x = note_stave.getNoteStartX();
-        this.current_clef = opts.clef;
+        this.current_clef = opts.clef === "none" ? "treble" : opts.clef;
       }
       if (opts.tablature === "true") {
-        tab_stave = new Vex.Flow.TabStave(this.x, this.last_y, this.customizations.width - 20).addTabGlyph().setNoteStartX(tabstave_start_x);
+        tab_stave = new Vex.Flow.TabStave(this.x, this.last_y, this.customizations.width - 20).setNoteStartX(tabstave_start_x);
+        if (opts.clef !== "none") {
+          tab_stave.addTabGlyph();
+        }
         this.last_y += tab_stave.getHeight() + this.options.tab_stave_lower_spacing;
       }
       this.closeBends();

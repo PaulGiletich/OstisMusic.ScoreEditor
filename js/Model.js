@@ -44,32 +44,10 @@ OSTISMusic.Chord = function (duration, notes){
     }
 };
 
-OSTISMusic.Takt = function(chords){
-    this.chords = [];
-    if(chords){
-        this.chords = chords.slice();
-    }
+OSTISMusic.Song = function(tickables){
+    this.tickables = tickables ? tickables : [];
 
-    this.toString = function(){
-        return "voice\n\tnotes " + this.chords.join(' ');
-    }
-};
-
-OSTISMusic.Voice = function(chords){
-    this.chords = [];
-    if(chords){
-        this.chords = chords.slice();
-    }
-
-    this.toString = function(){
-        return "voice\n\tnotes " + this.chords.join(' ');
-    }
-};
-
-OSTISMusic.Song = function(){
-    this.voices = [];
-
-    this.toString = function(){
-        return "tabstave notation=true tablature=false\n" + this.voices.join('\n');// there will be many tabstaves
+    this.getTickable = function(index){
+        return this.tickables[index];
     }
 };
