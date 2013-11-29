@@ -4,7 +4,7 @@ OSTISMusic.View = (function(){
         this.init();
     }
 
-    var artist = new Vex.Flow.Artist(10, 10, 600, {});
+    var artist = new Vex.Flow.Artist(0, 0, window.innerWidth, {});
 
     View.prototype = {
 
@@ -14,14 +14,16 @@ OSTISMusic.View = (function(){
             this.selectionCanvas = $("#selectionCanvas")[0];
             this.renderer = new Vex.Flow.Renderer(this.canvas, Vex.Flow.Renderer.Backends.CANVAS);
             Vex.Flow.Artist.NOLOGO = true;
-            //artist = new Vex.Flow.Artist(10, 10, 600, {});
             this.selectedNote = null;
+
+            this.notesPerLine = 8;
         },
 
         update: function(){
             artist.render(this.renderer);
             this.hoverCanvas.width = this.selectionCanvas.width = this.canvas.width;
             this.hoverCanvas.height = this.selectionCanvas.height  = this.canvas.height;
+            //TODO: player canvas resise
         },
 
         eachNote: function(callback){
@@ -86,6 +88,7 @@ OSTISMusic.View = (function(){
             for (var i = 0; i < artist.staves.length; i++){
                 var stave = artist.staves[i];
                 var boundingBox = stave.note.getBoundingBox();
+                boundingBox.h -= 20;
                 if(contains(boundingBox, point)){
                     return stave;
                 }
@@ -128,22 +131,35 @@ OSTISMusic.View = (function(){
                 rect.w,rect.h, true, 6);
         },
 
+        playingNote: function(note){
+            this.setSelectedNote(note);//TODO: this is temporary
+        },
+
         setSelectedNote: function(note){
             this.selectedNote = note;
-            updateSelection();
+            updateSelection(this);
         },
 
         getArtist: function(){
             return artist;
+        },
+
+        getWidth: function(){
+            return this.canvas.width;
+        },
+
+        setWidth: function(width){
+            this.canvas.width = width;
+            this.update();
         }
     };
 
-    function updateSelection(){
-        var ctx=this.selectionCanvas.getContext("2d");
+    function updateSelection(me){//TODO ask for me
+        var ctx=me.selectionCanvas.getContext("2d");
         ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
-        if(!this.selectedNote) return;
+        if(!me.selectedNote) return;
 
-        var rect = this.selectedNote.view.getBoundingBox();
+        var rect = me.selectedNote.view.getBoundingBox();
         ctx.globalAlpha = 0.3;
         ctx.fillStyle="#0000FF";
         ctx.roundRect(rect.x,rect.y,

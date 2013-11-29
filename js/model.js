@@ -51,5 +51,11 @@ OSTISMusic.Song = function(tickables){
 
     this.getTickable = function(index){
         return this.tickables[index];
+    };
+
+    this.eachNote = function(callback){
+        for(var i = 0; i < tickables.length; i++){
+            callback(tickables[i], i);
+        }
     }
 };

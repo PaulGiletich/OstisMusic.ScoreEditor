@@ -1,35 +1,66 @@
 <html>
 
 <head>
-    <link href="css/editor.css" rel="stylesheet" type="text/css"/>
 
-    <script src="js/libs/jquery-2.0.3.min.js"></script>
+    <link href="css/editor.css" rel="stylesheet" type="text/css"/>
+    <link href="css/libs/semantic-ui/css/semantic.min.css" rel="stylesheet" type="text/css">
+
+    <script src="js/libs/jquery/jquery-2.0.3.min.js"></script>
+    <script src="js/libs/jquery/jquery.address.js"></script>
+    <script src="js/libs/jquery/jquery.ba-resize.min.js"></script>
     <script src="js/libs/underscore-min.js"></script>
     <script src="js/libs/vexflow-min.js"></script>
 
-    <script src="js/libs/vextab_parser.js"></script>
-    <script src="js/libs/vextab.js"></script>
-    <script src="js/libs/artist.js"></script>
+    <script src="css/libs/semantic-ui/javascript/semantic.min.js"></script>
+
+    <script src="js/libs/vextab/vextab_parser.js"></script>
+    <script src="js/libs/vextab/vextab.js"></script>
+    <script src="js/libs/vextab/artist.js"></script>
 
     <script src="js/libs/midi-js/MIDI.min.js"></script>
     <script src="js/libs/midi-js/inc/Base64.js" type="text/javascript"></script>
     <script src="js/libs/midi-js/inc/base64binary.js" type="text/javascript"></script>
 
+    <script src="js/libs/paper.min.js"></script>
+    <script src="js/libs/vextab/player.js"></script>
+
 </head>
 
 <body>
+
 <div id="view">
-    <select id="duration">
-        <option value="4">4</option>
-        <option value="8">8</option>
-        <option value="16">16</option>
-    </select>
-<div class="canvas-layers">
-    <canvas id="canvas"></canvas>
-    <canvas id='hoverCanvas'></canvas>
-    <canvas id='selectionCanvas'></canvas>
-</div>
-<div id="error"></div>
+
+
+    <div class="ui top green attached segment">
+
+        <div class="controls ui tiny icon buttons">
+            <div class="stop ui basic button">
+                <i class="stop icon"></i>
+            </div>
+            <div class="play ui button">
+                <i class="play icon"></i>
+            </div>
+        </div>
+
+
+        <div id="duration" class="ui pagination menu">
+            <div class="item"value="1">Duration:</div>
+            <a class="item" value="1">1</a>
+            <a class="item" value="2">2</a>
+            <a class="active item" value="4">4</a>
+            <a class="item" value="8">8</a>
+            <a class="item" value="16">16</a>
+            <a class="item" value="32">32</a>
+        </div>
+    </div>
+    <div class="ui bottom attached segment" style="background-color: lightgrey">
+        <div class="canvas-layers" style="background-color: #ffffff">
+            <canvas id="canvas" width="580" height="500"></canvas>
+            <canvas id='hoverCanvas'></canvas>
+            <canvas id='selectionCanvas'></canvas>
+        </div>
+        <div id="error"></div>
+    </div>
 </div>
 <script src="js/ostismusic.js"></script>
 <script src="js/utility.js"></script>

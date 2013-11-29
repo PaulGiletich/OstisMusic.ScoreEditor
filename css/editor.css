@@ -1,5 +1,6 @@
 body {
-    padding: 20px;
+    padding: 10px 10px 0px;
+    background-color: #808080;
 }
 
 #error {
@@ -8,5 +9,6 @@ body {
     color: red;
 }
 
-.canvas-layers { position:relative; width:600px; height:400px }
-.canvas-layers canvas { position:absolute; top:0; left:0 }
+#view {max-width: 1000px; margin:0 auto; position: relative}
+.canvas-layers { max-width: 800px; overflow-x: hidden; overflow-y: auto; margin:0 auto; position:relative; width:80%; height: 80%;}
+.canvas-layers canvas { margin:50px; position:absolute; top:0; left:0 }

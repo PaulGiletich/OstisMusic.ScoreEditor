@@ -1,4 +1,4 @@
-OSTISMusic.Player = (function(){
+OSTISMusic.PlayerLoader = (function(){
     function Player(){
         this.init();
     }
