@@ -2,7 +2,7 @@ OSTISMusic.View = (function(){
 
     function View(){
         this.init();
-    };
+    }
 
     var artist = new Vex.Flow.Artist(10, 10, 600, {});
 
@@ -110,7 +110,6 @@ OSTISMusic.View = (function(){
         phantomNote: function(point){
             var ctx=this.hoverCanvas.getContext("2d");
             ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
-
             ctx.globalAlpha = 0.5;
             ctx.fillStyle="#000000";
             ctx.roundRect(point.x,point.y,

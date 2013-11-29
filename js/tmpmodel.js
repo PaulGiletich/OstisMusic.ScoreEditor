@@ -11,8 +11,10 @@ OSTISMusic.BarNote = function (type){
     var types = {
         "SINGLE": "|",
         "DOUBLE": "=||",
-        "END"   : "=|="
-    };
+        "END"   : "=|=",
+        "RBEGIN": "=|:",
+        "REND"  : "=:|"
+};
 
     if(!type in types){
         throw "Incorrect bar type";
