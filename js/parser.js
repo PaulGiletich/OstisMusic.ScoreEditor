@@ -1,33 +1,28 @@
-OSTISMusic.Parser = (function(){
-    function Parser(view){
-        this.view = view;
-    }
+OSTISMusic.Parser = function (view){
+    this.view = view;//we need view here to access it's width and notesPerLine options
 
-    Parser.prototype = {
+    this.parse = function(song){
+        var result = "";
 
-        parse: function(song){
-            var result = "";
+        var fillness = 0;
+        var staveNotes = [];
+        song.eachNote(function(tickable, index){
+            if(tickable instanceof OSTISMusic.BarNote){
+                staveNotes.push(tickable.toString());
+            }
+            if(tickable instanceof OSTISMusic.Chord){
+                staveNotes.push(parseChord(tickable));
+                fillness += 1/tickable.duration;
+            }
 
-            var fillness = 0;
-            var staveNotes = [];
-            song.eachNote(function(tickable, index){
-                if(tickable instanceof OSTISMusic.BarNote){
-                    staveNotes.push(tickable.toString());
-                }
-                if(tickable instanceof OSTISMusic.Chord){
-                    staveNotes.push(parseChord(tickable));
-                    fillness += 1/tickable.duration;
-                }
+            if(staveNotes.length == this.view.notesPerLine && index != song.tickables.length-1){
+                result += makeStave(staveNotes, this.view.getWidth());
+                staveNotes = [];
+            }
 
-                if(staveNotes.length == this.view.notesPerLine && index != song.tickables.length-1){
-                    result += makeStave(staveNotes, this.view.getWidth());
-                    staveNotes = [];
-                }
-
-            }.bind(this));
-            result += makeStave(staveNotes, this.view.getWidth() * (staveNotes.length/this.view.notesPerLine));
-            return result;
-        }
+        }.bind(this));
+        result += makeStave(staveNotes, this.view.getWidth() * (staveNotes.length/this.view.notesPerLine));
+        return result;
     };
 
     function makeStave(staveNotes, width){
@@ -61,8 +56,12 @@ OSTISMusic.Parser = (function(){
     }
 
     function parseNote(note){
-        return note.key + "/" + note.octave;
+        var result = "";
+        result += note.key;
+        if(note.sharp){
+            result += "#";
+        }
+        result += "/" + note.octave;
+        return result;
     }
-
-    return Parser;
-})();
+}

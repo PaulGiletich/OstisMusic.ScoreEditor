@@ -1,2 +1,1 @@
-
-function OSTISMusic(){}
+var OSTISMusic = {}

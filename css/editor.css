@@ -6,10 +6,6 @@ body {
     /*todo discover how to fill height*/
 }
 
-/*div #view > div .ui, #view{*/
-    /*margin:0; padding: 0; border: 0;*/
-/*}*/
-
 #view {
     max-width: 1000px;
     margin:0 auto;

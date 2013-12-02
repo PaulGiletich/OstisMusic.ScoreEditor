@@ -7,7 +7,6 @@
 
     <script src="js/libs/jquery/jquery-2.0.3.min.js"></script>
     <script src="js/libs/jquery/jquery.address.js"></script>
-    <script src="js/libs/jquery/jquery.ba-resize.min.js"></script>
     <script src="js/libs/underscore-min.js"></script>
     <script src="js/libs/vexflow-min.js"></script>
 
@@ -51,15 +50,17 @@
             <a class="item" value="16">16</a>
             <a class="item" value="32">32</a>
         </div>
-    </div>
-    <!--<div class="ui bottom attached segment" style="background-color: lightgrey">-->
-        <div class="canvas-layers">
-            <canvas id="canvas" width="580" height="500"></canvas>
-            <canvas id='hoverCanvas'></canvas>
-            <canvas id='selectionCanvas'></canvas>
+
+        <div class="sharp ui basic button">
+            #
         </div>
-        <div id="error"></div>
-    <!--</div>-->
+    </div>
+    <div class="canvas-layers">
+        <canvas id="canvas" width="580" height="500"></canvas>
+        <canvas id='hoverCanvas'></canvas>
+        <canvas id='selectionCanvas'></canvas>
+    </div>
+    <div id="error"></div>
 </div>
 <script src="js/ostismusic.js"></script>
 <script src="js/utility.js"></script>

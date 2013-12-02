@@ -1,6 +1,8 @@
 OSTISMusic.Note = function (key, octave){
     this.key = key;
     this.octave = octave;
+    this.sharp = false;
+    this.bemole = false;  //TODO: idk english бемоль, rename
 
     this.toString = function(){
         return this.key + "/" + this.octave;
@@ -14,7 +16,7 @@ OSTISMusic.BarNote = function (type){
         "END"   : "=|=",
         "RBEGIN": "=|:",
         "REND"  : "=:|"
-};
+    };
 
     if(!type in types){
         throw "Incorrect bar type";
