@@ -7,6 +7,7 @@
 
     <script src="js/libs/jquery/jquery-2.0.3.min.js"></script>
     <script src="js/libs/jquery/jquery.address.js"></script>
+    <script src="js/libs/jquery/jquery.hotkeys.js"></script>
     <script src="js/libs/underscore-min.js"></script>
     <script src="js/libs/vexflow-min.js"></script>
 
@@ -27,12 +28,12 @@
 
 <body>
 
-<div id="view">
+<div class="view">
 
 
     <div class="ui top green attached segment">
 
-        <div class="controls ui tiny icon buttons">
+        <div class="controls ui icon buttons">
             <div class="stop ui basic button">
                 <i class="stop icon"></i>
             </div>
@@ -41,7 +42,7 @@
             </div>
         </div>
 
-        <div id="duration" class="ui pagination menu">
+        <div class="duration ui pagination menu">
             <div class="item"value="1">Duration:</div>
             <a class="item" value="1">1</a>
             <a class="item" value="2">2</a>
@@ -54,16 +55,28 @@
         <div class="sharp ui basic button">
             #
         </div>
+
+        <div class="flat ui basic button">
+            b
+        </div>
+
+        <div class="save ui basic button">
+            Save
+        </div>
+        <input type="file" id="hiddenFileInput" style="display: none">
+        <div class="load ui basic button">
+            Load
+        </div>
     </div>
     <div class="canvas-layers">
         <canvas id="canvas" width="580" height="500"></canvas>
         <canvas id='hoverCanvas'></canvas>
         <canvas id='selectionCanvas'></canvas>
     </div>
-    <div id="error"></div>
+    <div class="error"></div>
 </div>
 <script src="js/ostismusic.js"></script>
-<script src="js/utility.js"></script>
+<script src="js/util.js"></script>
 <script src="js/model.js"></script>
 <script src="js/view.js"></script>
 <script src="js/player.js"></script>

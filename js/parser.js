@@ -61,6 +61,9 @@ OSTISMusic.Parser = function (view){
         if(note.sharp){
             result += "#";
         }
+        if(note.flat){
+            result += "@";
+        }
         result += "/" + note.octave;
         return result;
     }

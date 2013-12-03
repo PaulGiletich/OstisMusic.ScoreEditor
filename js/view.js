@@ -94,10 +94,10 @@ OSTISMusic.View = function (){
 
     this.getNewNoteByPos = function(point){
         var stave = this.findStave(point);
-        var note = 0 + 7*7;    // note at top - C/7
+        var note = 0 + 7*7;    // note at line -5 : C/7
         for(var i = stave.note.getYForLine(-5); i < stave.note.getYForLine(15); i += 5){
             if(point.y < i){
-                return new OSTISMusic.Note(OSTISMusic.Util.numberToNote[note % 7], Math.floor(note/7));
+                return new OSTISMusic.Note(OSTISMusic.Util.getKeyByNumber(note % 7), Math.floor(note/7));
             }
             note--;
         }
@@ -125,20 +125,29 @@ OSTISMusic.View = function (){
     };
 
     this.playingNote = function(note){
-        this.setSelectedNote(note.index);//TODO: this is temporary
+        this.setSelectedNote(note.index);//TODO proper playing note indication
     };
 
     this.setSelectedNote = function(index){
+        if (index < 0) return;
+        if (this.getTickable(index) == null) {
+            this.setSelectedNote(index-1);
+            return;
+        }
         selectedNote = index;
-        drawSelection.call(this); //TODO how to avoid this crap, i want my this be at the same a place
+        drawSelection.call(this);
     };
 
     this.clearSelection = function(){
         return this.setSelectedNote(null);
     };
 
-    this.getSelectedNote = function(){
+    this.getSelectedIndex = function(){
         return selectedNote;
+    };
+
+    this.getSelectedNote = function(){
+        return this.getTickable(selectedNote);
     };
 
     this.getArtist = function(){
@@ -155,7 +164,7 @@ OSTISMusic.View = function (){
     };
 
     this.getTickable = function(index){
-        var result;
+        var result = null;
         this.eachNote(function(note, i){
             if(i == index){
                 result = {index: i, view: note};
@@ -179,3 +188,5 @@ OSTISMusic.View = function (){
     }
 
 };
+
+//scg-web

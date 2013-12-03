@@ -1,11 +1,9 @@
-OSTISMusic.Note = function (key, octave){
+OSTISMusic.Note = function (key, octave, opts){
     this.key = key;
     this.octave = octave;
-    this.sharp = false;
-    this.bemole = false;  //TODO: idk english бемоль, rename
-
-    this.toString = function(){
-        return this.key + "/" + this.octave;
+    if(opts){
+        this.flat = opts['flat'] ? opts.flat : false;
+        this.sharp = opts['sharp'] ? opts.sharp : false;
     }
 };
 
@@ -24,40 +22,30 @@ OSTISMusic.BarNote = function (type){
 
     this.type = type;
 
-    this.toString = function(){
+    this.prototype.toString = function(){
         return types[this.type];
     }
 };
 
 OSTISMusic.Chord = function (duration, notes){
+    this.duration = duration;
     this.notes = [];
     if(notes){
         this.notes = notes.slice();
     }
-    this.duration = duration;
-
-    this.toString = function(){
-        var result = ':' + this.duration + " ";
-        if(this.notes.length > 1){
-            result += "(" + this.notes.join('.') + ")";
-        }
-        else {
-            result += this.notes[0];
-        }
-        return  result;
-    }
 };
+
 
 OSTISMusic.Song = function(tickables){
     this.tickables = tickables ? tickables : [];
+};
 
-    this.getTickable = function(index){
-        return this.tickables[index];
-    };
+OSTISMusic.Song.prototype.getTickable = function(index){
+    return this.tickables[index];
+};
 
-    this.eachNote = function(callback){
-        for(var i = 0; i < tickables.length; i++){
-            callback(tickables[i], i);
-        }
+OSTISMusic.Song.prototype.eachNote = function(callback){
+    for(var i = 0; i < this.tickables.length; i++){
+        callback(this.tickables[i], i);
     }
 };

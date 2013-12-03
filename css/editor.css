@@ -6,7 +6,7 @@ body {
     /*todo discover how to fill height*/
 }
 
-#view {
+.view {
     max-width: 1000px;
     margin:0 auto;
     position: relative;

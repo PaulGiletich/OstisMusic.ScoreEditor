@@ -1,32 +1,58 @@
-OSTISMusic.Util = {};
+OSTISMusic.Util = {
+    contains: function contains(rect, point){
+        return (rect.x < point.x  &&
+            rect.y < point.y &&
+            rect.x + rect.w > point.x &&
+            rect.y + rect.h > point.y);
+    },
 
-OSTISMusic.Util.contains = function contains(rect, point){
-    return (rect.x < point.x  &&
-        rect.y < point.y &&
-        rect.x + rect.w > point.x &&
-        rect.y + rect.h > point.y);
-};
-
-OSTISMusic.Util.enlarge = function enlarge(rect, amount){
+    enlarge: function enlarge(rect, amount){
     return {x: rect.x - amount,
         y: rect.y - amount,
         w: rect.w + amount*2,
         h: rect.h + amount*2};
+    },
+
+    insertToArray: function(arr, index, item){
+        arr = arr.splice(index, 0, item);
+    },
+
+    notes: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+
+    getKeyByNumber: function(number){
+        return this.notes[number];
+    },
+
+    getNoteNumberByKey: function(key){
+        return this.notes.indexOf(key);
+    },
+
+    tickablesReviver: function(key, value) {
+        if(value.hasOwnProperty('key')
+            && value.hasOwnProperty('octave')
+            && value.hasOwnProperty('sharp')
+            && value.hasOwnProperty('flat')){
+            return new OSTISMusic.Note(value.key, value.octave, value);
+        }
+        if(value.hasOwnProperty('type')){//TODO consider better parsing
+            return new OSTISMusic.BarNote(value.type)
+        }
+        if(value.hasOwnProperty('tickables')){
+            return new OSTISMusic.Song(value.tickables);
+        }
+        if(value.hasOwnProperty('duration')
+            && value.hasOwnProperty('notes')){
+            return new OSTISMusic.Chord(value.duration, value.notes);
+        }
+        return value;
+    }
 };
 
-
-OSTISMusic.Util.insertToArray = function(arr, index, item){
-    arr = arr.splice(index, 0, item);
-};
-
-OSTISMusic.Util.numberToNote = {
-    0: "C",
-    1: "D",
-    2: "E",
-    3: "F",
-    4: "G",
-    5: "A",
-    6: "B"
+OSTISMusic.Util.saveFile = function (filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+    pom.click();
 };
 
 HTMLCanvasElement.prototype.relMouseCoords = function (event){
