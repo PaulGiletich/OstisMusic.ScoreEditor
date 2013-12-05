@@ -45,7 +45,7 @@ Vex.Flow.Clef = (function() {
 
     addModifier: function(stave) {
       var glyph = new Vex.Flow.Glyph(this.clef.code, this.clef.point);
-      this.placeGlyphOnLine(glyph, stave, this.clef.line);
+        this.placeGlyphOnLine(glyph, stave, this.clef.line);
       stave.addGlyph(glyph);
     }
   });
