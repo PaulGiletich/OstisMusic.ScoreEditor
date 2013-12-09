@@ -112,6 +112,15 @@ OSTISMusic.View = function (){
             0,0, true, 5);
     };
 
+    this.phantomRest = function(x, stave){
+        var ctx=hoverCanvas.getContext("2d");
+        ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle="#000000";
+        ctx.roundRect(x,stave.getYForLine(1),
+            0,stave.getYForLine(3) - stave.getYForLine(1), true, 5);
+    };
+
     this.highlightNote = function(note){
         var ctx=hoverCanvas.getContext("2d");
         ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);

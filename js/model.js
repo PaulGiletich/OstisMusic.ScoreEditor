@@ -35,6 +35,10 @@ OSTISMusic.Chord = function (duration, notes){
     }
 };
 
+OSTISMusic.RestChord = function(duration){
+    this.duration = duration;
+};
+
 
 OSTISMusic.Song = function(tickables){
     this.tickables = tickables ? tickables : [];

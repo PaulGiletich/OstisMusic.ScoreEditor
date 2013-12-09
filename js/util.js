@@ -40,9 +40,13 @@ OSTISMusic.Util = {
         if(value.hasOwnProperty('tickables')){
             return new OSTISMusic.Song(value.tickables);
         }
-        if(value.hasOwnProperty('duration')
-            && value.hasOwnProperty('notes')){
+        if (value.hasOwnProperty('notes')
+            && value.hasOwnProperty('duration')) {
             return new OSTISMusic.Chord(value.duration, value.notes);
+        }
+        if(value.hasOwnProperty('duration')
+            && ! value.hasOwnProperty('notes')){
+            return new OSTISMusic.RestChord(value.duration);
         }
         return value;
     }

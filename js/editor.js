@@ -1,11 +1,100 @@
-//controller
 OSTISMusic.Editor = function (){
+
+    //TODO this whole controller class became huge and needs to be refactored
+    //singletone instruments (some kind of clumsy strategy pattern.. whatever)
+    var NoteCreationInstrument = new function(){
+
+        this.scoreClick = function(e){
+            var coords = view.getLocalCoords(e);
+            var note = view.findNote(coords);
+            if(note){
+                noteClicked(note);
+                return;
+            }
+            var lastNote = view.findPreviousNote(coords);
+            if(lastNote){
+                addNote(coords);
+            }
+        };
+
+        this.mouseMove = function(e){
+            var coords = view.getLocalCoords(e);
+            var note = view.findNote(coords);
+            var prevNote = view.findPreviousNote(coords);
+            if(note){
+                view.highlightNote(note);
+            }
+            else if (prevNote){
+                coords.y = coords.y - coords.y % 5;
+                coords.x = prevNote.view.getAbsoluteX() + prevNote.view.getBoundingBox().w + 15;
+                view.phantomNote(coords);
+            }
+        };
+
+        function noteClicked(note){
+            player.playNote([note.view]);
+            view.setSelectedNote(note.index);
+        }
+
+        function addNote(point){
+            var prevNote = view.findPreviousNote(point);
+            var note = view.getNewNoteByPos(point);
+            var chord = new OSTISMusic.Chord(newNoteDuration, [note]);
+            OSTISMusic.Util.insertToArray(song.tickables, prevNote.index+1, chord);
+            update();
+            view.setSelectedNote(prevNote.index+1);
+        }
+    };
+
+    var RestCreationInstrument = new function(){
+
+        this.scoreClick = function(e){
+            var coords = view.getLocalCoords(e);
+            var note = view.findNote(coords);
+            if(note){
+                noteClicked(note);
+                return;
+            }
+            var lastNote = view.findPreviousNote(coords);
+            if(lastNote){
+                addRest(coords);
+            }
+        };
+
+        this.mouseMove = function(e){
+            var coords = view.getLocalCoords(e);
+            var note = view.findNote(coords);
+            var prevNote = view.findPreviousNote(coords);
+            if(note){
+                view.highlightNote(note);
+            }
+            else if (prevNote){
+                var x = prevNote.view.getAbsoluteX() + prevNote.view.getBoundingBox().w + 15;
+                view.phantomRest(x, view.findStave(coords).note);
+            }
+        };
+
+        function noteClicked(note){
+            player.playNote([note.view]);
+            view.setSelectedNote(note.index);
+        }
+
+        function addRest(point){
+            var prevNote = view.findPreviousNote(point);
+            var chord = new OSTISMusic.RestChord(newNoteDuration);
+            OSTISMusic.Util.insertToArray(song.tickables, prevNote.index+1, chord);
+            update();
+            view.setSelectedNote(prevNote.index+1);
+        }
+    };
+
     var view = new OSTISMusic.View();
     var vextab = new Vex.Flow.VexTab(view.getArtist());
     var parser = new OSTISMusic.Parser(view);
     var song = new OSTISMusic.Song();
     var player = createVexPlayer();
     var newNoteDuration = $('.durations .active').attr("value");
+    var selectedInstrument = NoteCreationInstrument;
 
     initScore();
     initButtons();
@@ -27,8 +116,12 @@ OSTISMusic.Editor = function (){
 
     function initScore(){
         $('.canvas-layers')
-            .click(scoreClick.bind(this))
-            .mousemove(mouseMove.bind(this));
+            .click(function(e) {
+                selectedInstrument.scoreClick(e);
+            })
+            .mousemove(function(e) {
+                selectedInstrument.mouseMove(e);
+            });
 
         window.addEventListener('resize', function () {
             view.setWidth($(".canvas-layers").innerWidth() - 100);
@@ -41,7 +134,7 @@ OSTISMusic.Editor = function (){
         $('.durations .item')
             .click(function(event){
                 $('.durations .item').removeClass("active");
-                event.target.className += " active";
+                $(event.target).addClass('active');
                 newNoteDuration = event.target.getAttribute("value");
                 song.getTickable(view.getSelectedIndex()).duration = newNoteDuration;
                 update();
@@ -58,11 +151,22 @@ OSTISMusic.Editor = function (){
         $('.accidental-flat').click(setNoteFlat);
         $('.accidental-none').click(setNoteDefault);
 
+        $('.tickable.note').click(function(event){
+            $('.tickables .tickable').removeClass('active');
+            $(event.target).addClass('active');
+            selectedInstrument = NoteCreationInstrument;
+        });
+
+        $('.tickable.rest').click(function(event){
+            $('.tickables .tickable').removeClass('active');
+            $(event.target).addClass('active');
+            selectedInstrument = RestCreationInstrument;
+        });
+
         $(".save").click(function(){
             OSTISMusic.Util.saveFile('song.json', JSON.stringify(song, null, '\t'));
         });
-
-        $(".load").click(function(ev){
+        $(".open").click(function(ev){
             $("#hiddenFileInput")
                 .click()
                 .bind('change', function(){
@@ -162,49 +266,6 @@ OSTISMusic.Editor = function (){
             view.playingNote(note);
         }.bind(this);
         return player;
-    }
-
-    function scoreClick(e){
-        var coords = view.getLocalCoords(e);
-        var note = view.findNote(coords);
-        if(note){
-            noteClicked(note);
-            return;
-        }
-        var lastNote = view.findPreviousNote(coords);
-        if(lastNote){
-            addNote(coords);
-        }
-    }
-
-    function noteClicked(note){
-        player.playNote([note.view]);
-        view.setSelectedNote(note.index);
-    }
-
-    function mouseMove(e){
-        var coords = view.getLocalCoords(e);
-        var note = view.findNote(coords);
-        var prevNote = view.findPreviousNote(coords);
-        if(note){
-            view.highlightNote(note);
-        }
-        else if (prevNote){
-
-            view.highlightNote(prevNote);
-            coords.y = coords.y - coords.y % 5;
-            coords.x = prevNote.view.getAbsoluteX() + prevNote.view.getBoundingBox().w + 15;
-            view.phantomNote(coords);
-        }
-    }
-
-    function addNote(point){
-        var prevNote = view.findPreviousNote(point);
-        var note = view.getNewNoteByPos(point);
-        var chord = new OSTISMusic.Chord(newNoteDuration, [note]);
-        OSTISMusic.Util.insertToArray(song.tickables, prevNote.index+1, chord);
-        update();
-        view.setSelectedNote(prevNote.index+1);
     }
 
     function deleteNote(){

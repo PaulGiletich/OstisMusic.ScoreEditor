@@ -1,27 +1,30 @@
 OSTISMusic.Parser = function (view){
-    this.view = view;//we need view here to access it's width and notesPerLine options
+    //we need view here to access it's width and notesPerLine options
 
     this.parse = function(song){
         var result = "";
 
         var fillness = 0;
-        var staveNotes = [];
+        var staveTickables = [];
         song.eachNote(function(tickable, index){
             if(tickable instanceof OSTISMusic.BarNote){
-                staveNotes.push(tickable.toString());
+                staveTickables.push(tickable.toString());
             }
             if(tickable instanceof OSTISMusic.Chord){
-                staveNotes.push(parseChord(tickable));
+                staveTickables.push(parseChord(tickable));
+                fillness += 1/tickable.duration;
+            }
+            if(tickable instanceof OSTISMusic.RestChord){
+                staveTickables.push(parseRestChord(tickable));
                 fillness += 1/tickable.duration;
             }
 
-            if(staveNotes.length == this.view.notesPerLine && index != song.tickables.length-1){
-                result += makeStave(staveNotes, this.view.getWidth());
-                staveNotes = [];
+            if(staveTickables.length == view.notesPerLine && index != song.tickables.length-1){
+                result += makeStave(staveTickables, view.getWidth());
+                staveTickables = [];
             }
-
-        }.bind(this));
-        result += makeStave(staveNotes, this.view.getWidth() * (staveNotes.length/this.view.notesPerLine));
+        });
+        result += makeStave(staveTickables, view.getWidth() * (staveTickables.length/view.notesPerLine));
         return result;
     };
 
@@ -67,4 +70,8 @@ OSTISMusic.Parser = function (view){
         result += "/" + note.octave;
         return result;
     }
-}
+
+    function parseRestChord(chord){
+        return ":" + chord.duration + " ##";
+    }
+};
