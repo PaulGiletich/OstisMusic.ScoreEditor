@@ -63,19 +63,24 @@ OSTISMusic.View = function (){
         var stave = this.findStave(point);
         if(!stave) return null;
 
-        var prevNote = null;
+        var result = null;
         this.eachNote(function(note, index){
             if (note.getStave() == stave.note && note.getAbsoluteX() > point.x) {
                 return true;
             }
             //this happens in the end of line, next note x is not greater, but note is actually previous
-            if (prevNote && prevNote.view.getStave() == stave.note && note.getStave() != stave.note) {
+            if (result && result.view.getStave() == stave.note && note.getStave() != stave.note) {
                 return true;
             }
-            prevNote =  {index: index, view: note};
+            //this happens at the start, when there is no previous note
+            if(note.getStave() == stave.note && index == 0 && note.getAbsoluteX() > point.x){
+                result = {index: -1};
+                return true;
+            }
+            result =  {index: index, view: note};
             return false;
         });
-        return prevNote;
+        return result;
     };
 
     this.findStave = function(point){

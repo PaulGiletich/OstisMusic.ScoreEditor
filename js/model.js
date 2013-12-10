@@ -44,6 +44,14 @@ OSTISMusic.Song = function(tickables){
     this.tickables = tickables ? tickables : [];
 };
 
+OSTISMusic.Song.prototype.removeTickable = function(index){
+    this.tickables.splice(index, 1);
+};
+
+OSTISMusic.Song.prototype.insertTickable = function(index, tickable){
+    OSTISMusic.Util.insertToArray(this.tickables, index, tickable);
+};
+
 OSTISMusic.Song.prototype.getTickable = function(index){
     return this.tickables[index];
 };

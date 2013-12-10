@@ -24,19 +24,20 @@ OSTISMusic.Parser = function (view){
                 staveTickables = [];
             }
         });
-        result += makeStave(staveTickables, view.getWidth() * (staveTickables.length/view.notesPerLine));
+        result += makeStave(staveTickables, view.getWidth() * ((staveTickables.length+1)/(view.notesPerLine+1)));
         return result;
     };
 
     function makeStave(staveNotes, width){
-        if(staveNotes.length == 0){
-            return "";
-        }
-        var result = "\n\noptions " +
+        var result = " \n\n options " +
             "player=true" +
             " width=" + width;
-        result += "\ntabstave notation=true clef=none tablature=false\nvoice\nnotes ";
-        result += staveNotes.join(" ");
+        result += " \n tabstave notation=true clef=none tablature=false \n voice";
+
+        if(staveNotes.length > 0){
+            result += " \n notes ";
+            result += staveNotes.join(" ");
+        }
         return result;
     }
 
