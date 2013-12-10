@@ -1,11 +1,14 @@
 module.exports = function(grunt) {
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('watch', [ 'watch' ]);
 
     grunt.initConfig({
         concat: {
             'build/js/ostis-score-editor.js': [
-                'js/*.js'
+                'js/**/*.js'
             ]
         },
         uglify: {
@@ -15,7 +18,7 @@ module.exports = function(grunt) {
         },
         watch: {
             js: {
-                files: ['js/*.js'],
+                files: ['js/**/*.js'],
                 tasks: ['concat', 'uglify'],
                 options: {
                     livereload: true
@@ -23,10 +26,6 @@ module.exports = function(grunt) {
             }
         }
     });
-
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', ['concat', 'uglify']);
 };
