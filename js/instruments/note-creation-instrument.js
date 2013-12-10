@@ -1,7 +1,7 @@
 OSTISMusic.Instrument.NoteCreationInstrument = function(editor){
 
     this.scoreClick = function(e){
-        var coords = editor.view.getLocalCoords(e);
+        var coords = editor.view.toLocalCoords(e);
         var note = editor.view.findNote(coords);
         if(note){
             noteClicked(note);
@@ -14,11 +14,11 @@ OSTISMusic.Instrument.NoteCreationInstrument = function(editor){
     };
 
     this.mouseMove = function(e){
-        var coords = editor.view.getLocalCoords(e);
+        var coords = editor.view.toLocalCoords(e);
         var note = editor.view.findNote(coords);
         var prevNote = editor.view.findPreviousNote(coords);
         if(note){
-            editor.view.highlightNote(note);
+            editor.view.highlightNote(note.view);
         }
         else if (prevNote){
             coords.y = coords.y - coords.y % 5;

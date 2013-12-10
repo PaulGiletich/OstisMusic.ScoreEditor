@@ -46,7 +46,7 @@ OSTISMusic.Util = {
         }
         if(value.hasOwnProperty('duration')
             && ! value.hasOwnProperty('notes')){
-            return new OSTISMusic.RestChord(value.duration);
+            return new OSTISMusic.Rest(value.duration);
         }
         return value;
     }
@@ -59,6 +59,11 @@ OSTISMusic.Util.saveFile = function (filename, text) {
     pom.click();
 };
 
+/**
+ * transforms event point coordinated relative to canvas
+ * @param event {event}
+ * @returns {{x: number, y: number}}
+ */
 HTMLCanvasElement.prototype.relMouseCoords = function (event){
     var totalOffsetX = 0;
     var totalOffsetY = 0;
