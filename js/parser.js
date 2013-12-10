@@ -1,6 +1,14 @@
+/**
+ * Parser from app model to vextab
+ * @param {OSTISMusic.View} view - we need view here to access it's width and notesPerLine options
+ * @constructor
+ */
 OSTISMusic.Parser = function (view){
-    //we need view here to access it's width and notesPerLine options
 
+    /**
+     * @param {OSTISMusic.Song} song
+     * @returns {string}
+     */
     this.parse = function(song){
         var result = "";
 
@@ -14,7 +22,7 @@ OSTISMusic.Parser = function (view){
                 staveTickables.push(parseChord(tickable));
                 fillness += 1/tickable.duration;
             }
-            if(tickable instanceof OSTISMusic.RestChord){
+            if(tickable instanceof OSTISMusic.Rest){
                 staveTickables.push(parseRestChord(tickable));
                 fillness += 1/tickable.duration;
             }

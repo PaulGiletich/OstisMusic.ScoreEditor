@@ -1,12 +1,21 @@
+/**
+ *
+ * @constructor
+ */
 OSTISMusic.Editor = function (){
 
     var _this = this;
+    /** @type {OSTISMusic.Song}  */
     this.song = new OSTISMusic.Song();
+    /** @type {OSTISMusic.View} */
     this.view = new OSTISMusic.View();
-    var vextab = new Vex.Flow.VexTab(this.view.getArtist());
+    var vextab = new Vex.Flow.VexTab(this.view.artist);
     var parser = new OSTISMusic.Parser(this.view);
+    /** @type {Vex.Flow.Player} */
     this.player = createVexPlayer();
+    /** @type {Number} */
     this.newNoteDuration = $('.durations .active').attr("value");
+    /** @type {OSTISMusic.Instrument} */
     this.selectedInstrument = new OSTISMusic.Instrument.NoteCreationInstrument(this);
 
     //TODO read about how do events registrated in single-page applications, cleanup this event hell
@@ -49,7 +58,7 @@ OSTISMusic.Editor = function (){
                 $('.durations .item').removeClass("active");
                 $(event.target).addClass('active');
                 _this.newNoteDuration = event.target.getAttribute("value");
-                _this.song.getTickable(_this.view.getSelectedIndex()).duration = _this.newNoteDuration;
+                _this.song.getTickable(_this.view.getSelectedNote()).duration = _this.newNoteDuration;
                 $.event.trigger('songChanged');
             });
 
@@ -61,25 +70,25 @@ OSTISMusic.Editor = function (){
         });
 
         $('.accidental-sharp').click(function setNoteSharp(){
-            var chord = _this.song.getTickable(_this.view.getSelectedIndex());
+            var chord = _this.song.getTickable(_this.view.getSelectedNote());
             chord.notes[0].flat = false;
             chord.notes[0].sharp = true;//TODO: change when making editable chords
             $.event.trigger('songChanged');
-            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedIndex()).view]);
+            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedNote()).view]);
         });
         $('.accidental-flat').click(function setNoteFlat(){
-            var chord = _this.song.getTickable(_this.view.getSelectedIndex());
+            var chord = _this.song.getTickable(_this.view.getSelectedNote());
             chord.notes[0].flat = true;
             chord.notes[0].sharp = false;
             $.event.trigger('songChanged');
-            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedIndex()).view]);
+            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedNote()).view]);
         });
         $('.accidental-none').click(function setNoteDefault(){
-            var chord = _this.song.getTickable(_this.view.getSelectedIndex());
+            var chord = _this.song.getTickable(_this.view.getSelectedNote());
             chord.notes[0].flat = false;
             chord.notes[0].sharp = false;
             $.event.trigger('songChanged');
-            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedIndex()).view]);
+            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedNote()).view]);
         });
 
         $('.tickable.note').click(function(event){
@@ -114,20 +123,20 @@ OSTISMusic.Editor = function (){
     function initHotkeys(){
 
         $(document).bind('keydown', 'del', function(){
-            _this.song.removeTickable(_this.view.getSelectedIndex());
+            _this.song.removeTickable(_this.view.getSelectedNote());
         });
 
         $(document).bind('keydown', 'left', function(){
-            _this.view.setSelectedNote(_this.view.getSelectedIndex()-1);
+            _this.view.setSelectedNote(_this.view.getSelectedNote()-1);
         });
 
         $(document).bind('keydown', 'right', function(){
-            _this.view.setSelectedNote(_this.view.getSelectedIndex()+1);
+            _this.view.setSelectedNote(_this.view.getSelectedNote()+1);
         });
 
         $(document).bind('keydown', 'ctrl+up', function(e){
             e.preventDefault();
-            var chord = _this.song.getTickable(_this.view.getSelectedIndex());//TODO change when making editable chords
+            var chord = _this.song.getTickable(_this.view.getSelectedNote());//TODO change when making editable chords
             for(var i = 0; i < chord.notes.length; i++){
                 var note = chord.notes[i];
                 var newKey = OSTISMusic.Util.getNoteNumberByKey(note.key) + 1;
@@ -140,12 +149,12 @@ OSTISMusic.Editor = function (){
                 }
             }
             $.event.trigger('songChanged');
-            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedIndex()).view]);
+            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedNote()).view]);
         });
 
         $(document).bind('keydown', 'ctrl+down', function(e){
             e.preventDefault();
-            var chord = _this.song.getTickable(_this.view.getSelectedIndex());//TODO change when making editable chords
+            var chord = _this.song.getTickable(_this.view.getSelectedNote());//TODO change when making editable chords
             for(var i = 0; i < chord.notes.length; i++){
                 var note = chord.notes[i];
                 var newKey = OSTISMusic.Util.getNoteNumberByKey(note.key) - 1;
@@ -158,38 +167,41 @@ OSTISMusic.Editor = function (){
                 }
             }
             $.event.trigger('songChanged');
-            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedIndex()).view]);
+            _this.player.playNote([_this.view.getTickable(_this.view.getSelectedNote()).view]);
         });
 
         $(document).bind('keydown', 'ctrl+right', function(e){
             e.preventDefault();
-            var selectedIndex = _this.view.getSelectedIndex();
+            var selectedIndex = _this.view.getSelectedNote();
             if(_this.view.getTickable(selectedIndex+1) == null) return;
 
             var tmp = _this.song.tickables[selectedIndex];
             _this.song.tickables[selectedIndex] = _this.song.tickables[selectedIndex+1];
             _this.song.tickables[selectedIndex+1] = tmp;
 
-            _this.view.setSelectedNote(_this.view.getSelectedIndex()+1);
+            _this.view.setSelectedNote(_this.view.getSelectedNote()+1);
             $.event.trigger('songChanged');
         });
 
         $(document).bind('keydown', 'ctrl+left', function(e){
             e.preventDefault();
-            var selectedIndex = _this.view.getSelectedIndex();
+            var selectedIndex = _this.view.getSelectedNote();
             if(_this.view.getTickable(selectedIndex-1) == null) return;
 
             var tmp = _this.song.tickables[selectedIndex];
             _this.song.tickables[selectedIndex] = _this.song.tickables[selectedIndex-1];
             _this.song.tickables[selectedIndex-1] = tmp;
 
-            _this.view.setSelectedNote(_this.view.getSelectedIndex()-1);
+            _this.view.setSelectedNote(_this.view.getSelectedNote()-1);
             $.event.trigger('songChanged');
         });
     }
 
+    /**
+     * @returns {Vex.Flow.Player}
+     */
     function createVexPlayer(){
-        var player = new Vex.Flow.Player(_this.view.getArtist(), {
+        var player = new Vex.Flow.Player(_this.view.artist, {
             soundfont_url: "soundfont/",
             show_controls: false,
             tempo: 50
@@ -203,10 +215,13 @@ OSTISMusic.Editor = function (){
         return player;
     }
 
+    /**
+     * Reparse song and update scene
+     */
     this.update = function(){
         try {
             vextab.reset();
-            _this.view.getArtist().reset();
+            _this.view.artist.reset();
             vextab.parse(parser.parse(_this.song));
             _this.view.update();
             $(".error").text("");
