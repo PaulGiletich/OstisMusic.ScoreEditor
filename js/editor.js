@@ -124,6 +124,7 @@ OSTISMusic.Editor = function (){
 
         $(document).bind('keydown', 'del', function(){
             _this.song.removeTickable(_this.view.getSelectedNote());
+            $.event.trigger('songChanged');
         });
 
         $(document).bind('keydown', 'left', function(){
