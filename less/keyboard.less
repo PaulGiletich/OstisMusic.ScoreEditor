@@ -39,17 +39,31 @@
     background-color: #000000;
 
     .key-text {
-      color: #ffffff;
       font-size: 70%;
+    }
+
+    .key-key {
+      .key-text;
+      font-size: 130%;
+      color: lighten(#000000, 40%);
     }
   }
 
   .key-text {
-    padding-bottom: @key-width/2;
+    color: darken(#ffffff, 30%);
+    padding-bottom: @key-width;
     position: absolute;
     bottom: 0;
     width: 100%;
     text-align: center;
+  }
+
+  .key-key {
+    .key-text;
+    color: darken(#ffffff, 10%);
+    font-weight: bold;
+    padding-bottom: @key-width/4;
+    font-size: 130%;
   }
 }
 

@@ -19,6 +19,7 @@ define({
 
     notes: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
     keyboardNotes: ['C', 'Db', 'D', 'Eb', "E", 'F', "Gb", 'G', 'Ab', 'A', 'Bb', 'B'],
+    keyboardKeys: 'zsxdcvgbhnjmq2w3er5t6y7ui9o0p[=]'.split(''),
 
 
     getKeyByNumber: function getKeyByNumber(number){

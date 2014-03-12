@@ -3,8 +3,6 @@ define(['util', 'player'], function(Util, Player){
     var self = this;
     var $keyboard = $('.keyboard');
 
-    Player.init();
-
     var Keyboard = {
         init: function(){
             var notesCount = 36;
@@ -13,46 +11,50 @@ define(['util', 'player'], function(Util, Player){
             for(var i = 0; i < notesCount; i++){
                 var note = Util.keyboardNotes[i % 12];
                 var octave = startOctave + Math.floor(i/12);
-                if(note.indexOf('b') == -1){
-                    $keyboard.append(createKey(note, octave));
-                } else {
-                    $keyboard.append(createBlackKey(note, octave));
-                }
+                var $key = note.indexOf('b') == -1 ? createKey(note, octave) : createBlackKey(note, octave);
+                bindEvents($key.find('.key'), i, note, octave);
+                $keyboard.append($key);
             }
         }
     };
 
+    function bindEvents($key, keyIndex, note, octave){
+        $key.mousedown(function(e){
+            $(e.currentTarget).addClass('key-pressed');
+            Player.startTone(note, octave);
+        });
+        $key.mouseup(function(e){
+            $('.key').removeClass('key-pressed');
+            Player.endTone(note, octave);
+        });
+        var keyKey = Util.keyboardKeys[keyIndex];
+        $key.append($('<div class="key-key">').text(keyKey.toUpperCase()));
+
+        var fired = false;
+        KeyboardJS.on(keyKey, function(){
+            if(!fired) {
+                $key.mousedown();
+                fired = true;
+            }
+        }, function(){
+            $key.mouseup();
+            fired = false;
+        });
+    }
+
     //TODO move to handlebars or dust.js
     function createKey(note, octave){
-        var $key =  $('<div class="key-white-wrapper">')
+        return $('<div class="key-white-wrapper">')
             .append($('<div class="key">')
                 .append($('<div class="key-text">')
                     .text(note + octave)));
-        $key.children().mousedown(function(e){
-            $(e.currentTarget).addClass('key-pressed');
-            Player.startTone(note, octave);
-        });
-        $key.children().mouseup(function(e){
-            $('.key').removeClass('key-pressed');
-            Player.endTone(note, octave);
-        });
-        return $key;
     }
 
     function createBlackKey(note, octave){
-        var $key =  $('<div class="key-black-wrapper">')
+        return $('<div class="key-black-wrapper">')
             .append($('<div class="key key-black">')
                 .append($('<div class="key-text">')
                     .text(note + octave)));
-        $key.children().mousedown(function(e){
-            $(e.currentTarget).addClass('key-pressed');
-            Player.startTone(note, octave);
-        });
-        $key.children().mouseup(function(e){
-            $('.key').removeClass('key-pressed');
-            Player.endTone(note, octave);
-        });
-        return $key;
     }
 
     return Keyboard;

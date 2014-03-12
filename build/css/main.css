@@ -78,15 +78,32 @@ body {
   background-color: #000000;
 }
 .key.key-black .key-text {
-  color: #ffffff;
   font-size: 70%;
 }
+.key.key-black .key-key {
+  font-size: 70%;
+  font-size: 130%;
+  color: #666666;
+}
 .key .key-text {
-  padding-bottom: 20px;
+  color: #b3b3b3;
+  padding-bottom: 40px;
   position: absolute;
   bottom: 0;
   width: 100%;
   text-align: center;
+}
+.key .key-key {
+  color: #b3b3b3;
+  padding-bottom: 40px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: #e6e6e6;
+  font-weight: bold;
+  padding-bottom: 10px;
+  font-size: 130%;
 }
 .key-wrapper,
 .key-white-wrapper,
