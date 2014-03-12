@@ -56,6 +56,11 @@ body {
   -o-transition: 0.05s linear;
   -ms-transition: 0.05s linear;
   transition: 0.05s linear;
+  -webkit-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+  -o-transform: rotateX(0deg);
+  -ms-transform: rotateX(0deg);
+  transform: rotateX(0deg);
 }
 .key.key-pressed {
   -webkit-transform-origin: center top;
@@ -63,11 +68,11 @@ body {
   -o-transform-origin: center top;
   -ms-transform-origin: center top;
   transform-origin: center top;
-  -webkit-transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
-  -moz-transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
-  -o-transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
-  -ms-transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
-  transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
+  -webkit-transform: rotateX(-10deg);
+  -moz-transform: rotateX(-10deg);
+  -o-transform: rotateX(-10deg);
+  -ms-transform: rotateX(-10deg);
+  transform: rotateX(-10deg);
   background-color: #cdcdcd !important;
 }
 .key.key-black {
@@ -81,33 +86,26 @@ body {
   font-size: 70%;
 }
 .key.key-black .key-key {
-  font-size: 70%;
   font-size: 130%;
   color: #666666;
 }
 .key .key-text {
   color: #b3b3b3;
-  padding-bottom: 40px;
   position: absolute;
-  bottom: 0;
+  bottom: 40px;
   width: 100%;
   text-align: center;
 }
 .key .key-key {
-  color: #b3b3b3;
-  padding-bottom: 40px;
   position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
+  bottom: 10px;
   color: #e6e6e6;
   font-weight: bold;
-  padding-bottom: 10px;
+  width: 100%;
+  text-align: center;
   font-size: 130%;
 }
-.key-wrapper,
-.key-white-wrapper,
-.key-black-wrapper {
+.key-wrapper {
   float: left;
   position: relative;
   -webkit-perspective: 400px;
@@ -117,10 +115,23 @@ body {
   perspective: 400px;
 }
 .key-white-wrapper {
-  z-index: 1;
+  float: left;
+  position: relative;
+  -webkit-perspective: 400px;
+  -moz-perspective: 400px;
+  -o-perspective: 400px;
+  -ms-perspective: 400px;
+  perspective: 400px;
+  z-index: 2;
 }
 .key-black-wrapper {
+  float: left;
+  position: relative;
+  -webkit-perspective: 400px;
+  -moz-perspective: 400px;
+  -o-perspective: 400px;
+  -ms-perspective: 400px;
+  perspective: 400px;
   z-index: 3;
-  background-color: #000000;
 }
 

@@ -24,10 +24,11 @@
   margin: -1px;
   background-color: #ffffff;
   .transition(0.05s, linear);
+  .transform(rotateX(-0deg));
 
   &.key-pressed {
     .transform-origin(center, top);
-    .transform(rotateX(-10deg) rotateY(0deg) rotateZ(0deg));
+    .transform(rotateX(-10deg));
     background-color: #cdcdcd !important;
   }
 
@@ -43,7 +44,6 @@
     }
 
     .key-key {
-      .key-text;
       font-size: 130%;
       color: lighten(#000000, 40%);
     }
@@ -51,24 +51,21 @@
 
   .key-text {
     color: darken(#ffffff, 30%);
-    padding-bottom: @key-width;
     position: absolute;
-    bottom: 0;
+    bottom: @key-width;
     width: 100%;
     text-align: center;
   }
 
   .key-key {
-    .key-text;
+    position: absolute;
+    bottom: @key-width/4;
     color: darken(#ffffff, 10%);
     font-weight: bold;
-    padding-bottom: @key-width/4;
+    width: 100%;
+    text-align: center;
     font-size: 130%;
   }
-}
-
-.key-pressed {
-
 }
 
 .key-wrapper {
@@ -77,11 +74,12 @@
   .perspective(@height*2);
 }
 
-.key-white-wrapper:extend(.key-wrapper) {
-  z-index: 1;
+.key-white-wrapper {
+  .key-wrapper;
+  z-index: 2;
 }
 
-.key-black-wrapper:extend(.key-wrapper) {
+.key-black-wrapper{
+  .key-wrapper;
   z-index: 3;
-  background-color: #000000;
 }
