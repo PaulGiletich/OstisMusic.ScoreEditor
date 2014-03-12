@@ -6,6 +6,15 @@
 @key-width: @height/5;
 @key-black-width: @key-width * 0.6;
 
+.keyboard {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 .key {
   height: @height;
   width: @key-width;;
@@ -28,6 +37,19 @@
     width: @key-black-width;
     height: @key-black-height;
     background-color: #000000;
+
+    .key-text {
+      color: #ffffff;
+      font-size: 70%;
+    }
+  }
+
+  .key-text {
+    padding-bottom: @key-width/2;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
   }
 }
 

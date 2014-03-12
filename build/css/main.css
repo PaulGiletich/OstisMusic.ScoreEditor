@@ -36,6 +36,13 @@ body {
   left: 0;
 }
 
+.keyboard {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+.keyboard:hover {
+  cursor: pointer;
+}
 .key {
   height: 200px;
   width: 40px;
@@ -69,6 +76,17 @@ body {
   width: 24px;
   height: 120px;
   background-color: #000000;
+}
+.key.key-black .key-text {
+  color: #ffffff;
+  font-size: 70%;
+}
+.key .key-text {
+  padding-bottom: 20px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
 }
 .key-wrapper,
 .key-white-wrapper,

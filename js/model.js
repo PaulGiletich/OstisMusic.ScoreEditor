@@ -11,8 +11,8 @@ define('model', ['util'], function(Util){
         this.key = key;
         this.octave = octave;
         if(opts){
-            this.flat = opts['flat'] ? opts.flat : false;
-            this.sharp = opts['sharp'] ? opts.sharp : false;
+            this.flat = opts['flat'];
+            this.sharp = opts['sharp'];
         }
     };
 
