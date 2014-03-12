@@ -35,12 +35,20 @@ define(function(){
 
         self.startTone = function(key, octave){
             var noteValue = MIDI.keyToNote[key + octave];
-            MIDI.noteOn(0, noteValue, self.volume, 0);
+            try {
+                MIDI.noteOn(0, noteValue, self.volume, 0);
+            } catch(err) {
+                //aha
+            }
         };
 
         self.endTone = function(key, octave, duration){
             var noteValue = MIDI.keyToNote[key + octave];
-            MIDI.noteOff(0, noteValue, duration);
+            try{
+                MIDI.noteOff(0, noteValue, duration);
+            }catch (err){
+                //fuck MIDI
+            }
         };
     };
 
