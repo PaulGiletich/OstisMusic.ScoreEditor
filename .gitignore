@@ -2,4 +2,3 @@ libs-src/
 node-modules/
 .idea/
 *.iml
-build/

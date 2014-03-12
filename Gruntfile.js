@@ -1,31 +1,22 @@
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
-
-    grunt.registerTask('watch', [ 'watch' ]);
+    grunt.loadNpmTasks('grunt-contrib-connect');
 
     grunt.initConfig({
-        concat: {
-            'build/js/ostis-score-editor.js': [
-                'js/**/*.js'
-            ]
-        },
-        uglify: {
-            'build/js/ostis-score-editor.min.js': [
-                'build/js/ostis-score-editor.js'
-            ]
+        less: {
+            "build/css/main.css": "less/**/*.less"
         },
         watch: {
-            js: {
-                files: ['js/**/*.js'],
-                tasks: ['concat', 'uglify'],
-                options: {
-                    livereload: true
-                }
+            less: {
+                // Which files to watch (all .less files recursively in the less directory)
+                files: ['less/**/*.less'],
+                tasks: ['less']
             }
         }
     });
 
-    grunt.registerTask('default', ['concat', 'uglify']);
+    grunt.registerTask('default', ['concat', 'uglify', 'less']);
 };

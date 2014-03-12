@@ -1,0 +1,20 @@
+.experimental-feature(@name, @values) {
+  -webkit-@{name}: ~"@{values}";
+  -moz-@{name}: ~"@{values}";
+  -o-@{name}: ~"@{values}";
+  -ms-@{name}: ~"@{values}";
+  @{name}: ~"@{values}";
+}
+
+.transform-origin (@x:center, @y:center) {
+  .experimental-feature(transform-origin, "@{x} @{y}");
+}
+.perspective(@value: 500){
+  .experimental-feature(perspective, "@{value}");
+}
+.transition(@duration:0.2s, @ease:ease-out) {
+  .experimental-feature(transition, "@{duration} @{ease}");
+}
+.transform(...) {
+  .experimental-feature(transform, @arguments);
+}

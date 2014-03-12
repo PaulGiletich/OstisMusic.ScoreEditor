@@ -1,0 +1,91 @@
+html {
+  height: 100%;
+}
+body {
+  padding: 15px 15px 0;
+  background-color: #f2f2f2;
+  overflow: hidden;
+  height: auto;
+}
+.view {
+  max-width: 1000px;
+  height: auto;
+}
+.instruments {
+  padding: 15px;
+  background-color: #ffffff;
+  height: auto;
+}
+.instrument {
+  margin: 10px;
+}
+.canvas-layers {
+  max-width: 900px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0 auto;
+  position: relative;
+  /*todo*/
+  height: 87%;
+  background-color: #ffffff;
+}
+.canvas-layers canvas {
+  margin: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.key {
+  height: 200px;
+  width: 40px;
+  vertical-align: top;
+  float: left;
+  border: solid 1px #c1c1c1;
+  margin: -1px;
+  background-color: #ffffff;
+  -webkit-transition: 0.05s linear;
+  -moz-transition: 0.05s linear;
+  -o-transition: 0.05s linear;
+  -ms-transition: 0.05s linear;
+  transition: 0.05s linear;
+}
+.key.key-pressed {
+  -webkit-transform-origin: center top;
+  -moz-transform-origin: center top;
+  -o-transform-origin: center top;
+  -ms-transform-origin: center top;
+  transform-origin: center top;
+  -webkit-transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
+  -moz-transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
+  -o-transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
+  -ms-transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
+  transform: rotateX(-10deg) rotateY(0deg) rotateZ(0deg);
+  background-color: #cdcdcd !important;
+}
+.key.key-black {
+  position: absolute;
+  left: -12px;
+  width: 24px;
+  height: 120px;
+  background-color: #000000;
+}
+.key-wrapper,
+.key-white-wrapper,
+.key-black-wrapper {
+  float: left;
+  position: relative;
+  -webkit-perspective: 400px;
+  -moz-perspective: 400px;
+  -o-perspective: 400px;
+  -ms-perspective: 400px;
+  perspective: 400px;
+}
+.key-white-wrapper {
+  z-index: 1;
+}
+.key-black-wrapper {
+  z-index: 3;
+  background-color: #000000;
+}
+
