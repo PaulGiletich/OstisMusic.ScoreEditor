@@ -1,1 +1,0 @@
-OSTISMusic.Instrument = {};

@@ -1,0 +1,51 @@
+
+@import "lib/my-mixins";
+
+@height: 200px;
+@key-black-height: @height * 0.6;
+@key-width: @height/5;
+@key-black-width: @key-width * 0.6;
+
+.key {
+  height: @height;
+  width: @key-width;;
+  vertical-align: top;
+  float: left;
+  border: solid 1px #c1c1c1;
+  margin: -1px;
+  background-color: #ffffff;
+  .transition(0.05s, linear);
+
+  &.key-pressed {
+    .transform-origin(center, top);
+    .transform(rotateX(-10deg) rotateY(0deg) rotateZ(0deg));
+    background-color: #cdcdcd !important;
+  }
+
+  &.key-black {
+    position: absolute;
+    left: -(@key-black-width / 2);
+    width: @key-black-width;
+    height: @key-black-height;
+    background-color: #000000;
+  }
+}
+
+.key-pressed {
+
+}
+
+.key-wrapper {
+  float: left;
+  position: relative;
+  .perspective(@height*2);
+}
+
+.key-white-wrapper:extend(.key-wrapper) {
+  z-index: 1;
+}
+
+.key-black-wrapper:extend(.key-wrapper) {
+  z-index: 3;
+  background-color: #000000;
+}
