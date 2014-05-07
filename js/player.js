@@ -1,5 +1,6 @@
-define(function(){
+define(function(require){
     "use strict";
+    var Model = require('model');
 
     var Player = function(){
         var self = this;
@@ -9,43 +10,42 @@ define(function(){
         }
         Player.prototype.instance = self;
 
-        var wholeNoteDuration = 4; //seconds
         var volume = 127;
-        init();
 
-        function init(){
-            MIDI.loadPlugin({
-                soundfontUrl: "./soundfont/",
-                instrument: "acoustic_grand_piano",
-                callback: function(){
-                    console.log("player ready");
-                }
-            });
-        }
+        MIDI.loadPlugin({
+            soundfontUrl: "./soundfont/",
+            instrument: "acoustic_grand_piano",
+            callback: function () {
+                $(document).trigger('playerReady');
+            }
+        });
 
-        self.playChord = function(chord){
-            var duration = self.wholeNoteDuration / chord.duration;
+        self.playChord = function(chord, duration, delay){
+            if(chord instanceof Model.Rest) return;
+            delay = delay ? delay : 0;
             for(var i = 0; i < chord.notes.length; i++){
                 var key = chord.notes[i].key,
                     octave = chord.notes[i].octave;
-                self.startTone(key, octave);
-                self.endTone(key, octave, duration);
+                self.startTone(key, octave, delay);
+                self.endTone(key, octave, duration + delay);
             }
         };
 
-        self.startTone = function(key, octave){
+        self.startTone = function(key, octave, delay){
+            delay = delay ? delay : 0;
             var noteValue = MIDI.keyToNote[key + octave];
             try {
-                MIDI.noteOn(0, noteValue, self.volume, 0);
+                MIDI.noteOn(0, noteValue, self.volume, delay);
             } catch(err) {
                 //aha
             }
         };
 
-        self.endTone = function(key, octave, duration){
+        self.endTone = function(key, octave, delay){
+            delay = delay ? delay : 0;
             var noteValue = MIDI.keyToNote[key + octave];
             try{
-                MIDI.noteOff(0, noteValue, duration);
+                MIDI.noteOff(0, noteValue, delay);
             }catch (err){
                 //fuck MIDI
             }
