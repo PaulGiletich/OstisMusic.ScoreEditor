@@ -17,6 +17,11 @@ define(['util', 'player'], function(Util, Player){
                 $keyboard.append($key);
             }
             bindEvents();
+
+            $('.key').addClass('key-disabled');
+            $(document).on('playerReady', function(){
+                $('.key').removeClass('key-disabled');
+            });
         }
     };
 
