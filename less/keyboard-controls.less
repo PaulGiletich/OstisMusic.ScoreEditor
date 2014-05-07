@@ -1,0 +1,57 @@
+@import "lib/my-mixins";
+
+@switch-width: 25px;
+@switch-height: @switch-width * 3;
+@switch-border-color: #bababa;
+@switch-border: 2px;
+@point-diameter: @switch-width - 2 * @switch-border;
+
+.switch-checkbox {
+  display: none;
+}
+
+.switch-label {
+  width: @switch-width;
+  height: @switch-height;
+  background-color: #7c7c7c;
+  border: @switch-border solid @switch-border-color;
+  border-radius: @switch-width/2;
+  position: relative;
+
+  .slider {
+    background-color: @switch-border-color;
+    position: absolute;
+    top: @switch-height - @point-diameter - @switch-border;
+    border-radius: 50%;
+    width: @point-diameter;
+    height: @point-diameter;
+
+    &:before {
+      padding: 0 10px;
+      position: absolute;
+      .transform(translate(@point-diameter));
+      content: "OFF";
+      font-weight: bold;
+      color: @switch-border-color;
+    }
+    .transition(0.05s, linear);
+  }
+}
+
+
+.switch-checkbox:checked + .switch-label {
+  background-color: rgb(226, 226, 226);
+
+  .slider {
+    top: 0;
+
+    &:before {
+      content: "ON";
+    }
+  }
+}
+
+/////////////
+.keyboard-controls {
+  display: inline-block;
+}

@@ -63,8 +63,9 @@ define('model', ['util'], function(Util){
      * @param tickables
      * @constructor
      */
-    Model.Song = function(tickables){
+    Model.Song = function(tickables, tempo){
         this.tickables = tickables ? tickables : [];
+        this.tempo = tempo;
     };
 
     /**

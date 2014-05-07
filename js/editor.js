@@ -1,5 +1,5 @@
-define(['model', 'view', 'player', 'util', 'parser', 'instruments/instruments', 'serializer/json-serializer'],
-function(Model, View, Player, Util, Parser, Instruments, Serializer){
+define(['model', 'view', 'song-player', 'util', 'parser', 'instruments/instruments', 'serializer/json-serializer'],
+function(Model, View, SongPlayer, Util, Parser, Instruments, Serializer){
         "use strict";
 
     // This is fucking hell.
@@ -10,17 +10,17 @@ function(Model, View, Player, Util, Parser, Instruments, Serializer){
         this.view = new View();
         var vextab = new Vex.Flow.VexTab(this.view.artist);
         var parser = new Parser(this.view);
-        this.player = createVexPlayer();
+        this.player = SongPlayer;
         this.newNoteDuration = $('.durations .active').attr("value");
         this.selectedInstrument = new Instruments.NoteCreationInstrument(this);
 
         init();
 
         function init(){
-            initPlayer();
             initScore();
             initButtons();
             initHotkeys();
+            initEvents();
         }
 
         /**
@@ -39,13 +39,6 @@ function(Model, View, Player, Util, Parser, Instruments, Serializer){
                 $(".error").text(e.message);
             }
         };
-
-        function initPlayer(){
-            console.log('loading player');
-            Player.init().then(function(){
-                $('.player-control').removeClass('disabled');
-            });
-        }
 
         function initScore(){
             $('.canvas-layers')
@@ -78,8 +71,9 @@ function(Model, View, Player, Util, Parser, Instruments, Serializer){
                 });
 
             $('.play').click(function(){
-                self.player.play();
+                self.player.play(self.song);
             });
+
             $('.stop').click(function(){
                 self.player.stop();
             });
@@ -119,7 +113,7 @@ function(Model, View, Player, Util, Parser, Instruments, Serializer){
             });
 
             $(".save").click(function(){
-                Util.saveFile('song.json', Serializer.serialize(song));
+                Util.saveFile('song.json', Serializer.serialize(self.song));
             });
             $(".open").click(function(ev){
                 $("#hiddenFileInput")
@@ -132,6 +126,11 @@ function(Model, View, Player, Util, Parser, Instruments, Serializer){
                         };
                         reader.readAsText($("#hiddenFileInput")[0].files[0]);
                     });
+            });
+
+            $(document).on('playerReady', function () {
+                console.log('player ready');
+                $('.player-control').removeClass('disabled');
             });
         }
 
@@ -207,28 +206,19 @@ function(Model, View, Player, Util, Parser, Instruments, Serializer){
                 var tmp = self.song.tickables[selectedIndex];
                 self.song.tickables[selectedIndex] = self.song.tickables[selectedIndex-1];
                 self.song.tickables[selectedIndex-1] = tmp;
-
                 self.view.setSelectedNote(self.view.getSelectedNote()-1);
                 $.event.trigger('songChanged');
             });
         }
 
-        /**
-         * @returns {Vex.Flow.Player}
-         */
-        function createVexPlayer(){
-            var player = new Vex.Flow.Player(self.view.artist, {
-                soundfont_url: "soundfont/",
-                show_controls: false,
-                tempo: 50
+        function initEvents(){
+            $(document).on('playChord', function(e, i){
+                SongPlayer.play(self.song, i, i);
             });
 
-            //override :)
-            player.updateMarker = function(x, y){
-                var note = self.view.findPreviousNote({x: x, y: y});
-                self.view.playingNote(note);
-            };
-            return player;
+            $(document).on('chordPlayed', function(e, i){
+                self.view.setSelectedNote(i);
+            })
         }
     };
 

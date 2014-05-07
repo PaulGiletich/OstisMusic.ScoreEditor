@@ -1,4 +1,4 @@
-define(['model'], function(Model){
+define(['model', 'song-player'], function(Model, SongPlayer){
     "use strict";
 
     var NoteCreationInstrument = function(editor){
@@ -31,7 +31,7 @@ define(['model'], function(Model){
         };
 
         function noteClicked(note){
-            editor.player.playNote([note.view]);
+            $(document).trigger('playChord', note.index);
             editor.view.setSelectedNote(note.index);
         }
 

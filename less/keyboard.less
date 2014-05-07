@@ -24,11 +24,11 @@
   margin: -1px;
   background-color: #ffffff;
   .transition(0.05s, linear);
-  .transform(rotateX(-0deg));
+  .transform(scale(1));
 
   &.key-pressed {
     .transform-origin(center, top);
-    .transform(rotateX(-10deg));
+    .transform(scale(1, 0.95));
     background-color: #cdcdcd !important;
   }
 
