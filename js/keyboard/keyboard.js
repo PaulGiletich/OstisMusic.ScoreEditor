@@ -22,6 +22,7 @@ define(['util', 'player'], function(Util, Player){
             $(document).on('playerReady', function(){
                 $('.key').removeClass('key-disabled');
             });
+            $('.keyboard').height($('key-white-wrapper').height());
         }
     };
 

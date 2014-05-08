@@ -36,6 +36,56 @@ body {
   left: 0;
 }
 
+.switch-checkbox {
+  display: none;
+}
+.switch-label {
+  width: 25px;
+  height: 75px;
+  background-color: #7c7c7c;
+  border: 2px solid #bababa;
+  border-radius: 12.5px;
+  position: relative;
+}
+.switch-label .slider {
+  background-color: #bababa;
+  position: absolute;
+  top: 52px;
+  border-radius: 50%;
+  width: 21px;
+  height: 21px;
+  -webkit-transition: 0.05s linear;
+  -moz-transition: 0.05s linear;
+  -o-transition: 0.05s linear;
+  -ms-transition: 0.05s linear;
+  transition: 0.05s linear;
+}
+.switch-label .slider:before {
+  padding: 0 10px;
+  position: absolute;
+  -webkit-transform: translate(21px);
+  -moz-transform: translate(21px);
+  -o-transform: translate(21px);
+  -ms-transform: translate(21px);
+  transform: translate(21px);
+  content: "OFF";
+  font-weight: bold;
+  color: #bababa;
+}
+.switch-checkbox:checked + .switch-label {
+  background-color: #e2e2e2;
+}
+.switch-checkbox:checked + .switch-label .slider {
+  top: 0;
+}
+.switch-checkbox:checked + .switch-label .slider:before {
+  content: "ON";
+}
+.keyboard-controls {
+  display: inline-block;
+  margin: 10px;
+}
+
 .keyboard {
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -56,11 +106,11 @@ body {
   -o-transition: 0.05s linear;
   -ms-transition: 0.05s linear;
   transition: 0.05s linear;
-  -webkit-transform: rotateX(0deg);
-  -moz-transform: rotateX(0deg);
-  -o-transform: rotateX(0deg);
-  -ms-transform: rotateX(0deg);
-  transform: rotateX(0deg);
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -o-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
 }
 .key.key-pressed {
   -webkit-transform-origin: center top;
@@ -68,12 +118,15 @@ body {
   -o-transform-origin: center top;
   -ms-transform-origin: center top;
   transform-origin: center top;
-  -webkit-transform: rotateX(-10deg);
-  -moz-transform: rotateX(-10deg);
-  -o-transform: rotateX(-10deg);
-  -ms-transform: rotateX(-10deg);
-  transform: rotateX(-10deg);
+  -webkit-transform: scale(1, 0.95);
+  -moz-transform: scale(1, 0.95);
+  -o-transform: scale(1, 0.95);
+  -ms-transform: scale(1, 0.95);
+  transform: scale(1, 0.95);
   background-color: #cdcdcd !important;
+}
+.key.key-disabled {
+  background-color: #d3d3d3 !important;
 }
 .key.key-black {
   position: absolute;
