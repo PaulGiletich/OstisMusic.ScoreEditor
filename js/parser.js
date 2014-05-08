@@ -9,7 +9,7 @@ define(['model'], function(Model){
     var Parser = function (view){
 
         /**
-         * @param {Song} song
+         * @param {Track} song
          * @returns {string}
          */
         this.parse = function(song){

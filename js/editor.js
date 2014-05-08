@@ -6,7 +6,7 @@ function(Model, View, SongPlayer, Util, Parser, Instruments, Serializer){
     var Editor = function (){
 
         var self = this;
-        this.song = new Model.Song();
+        this.song = new Model.Track();
         this.view = new View();
         var vextab = new Vex.Flow.VexTab(this.view.artist);
         var parser = new Parser(this.view);

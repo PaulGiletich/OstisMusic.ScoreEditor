@@ -104,7 +104,7 @@ define('model', ['util'], function(Util){
      * @param tickables
      * @constructor
      */
-    Model.Song = function(tickables, tempo){
+    Model.Track = function(tickables, tempo){
         this.tickables = tickables ? tickables : [];
         this.tempo = tempo;
     };
@@ -112,7 +112,7 @@ define('model', ['util'], function(Util){
     /**
      * @param {Number} index
      */
-    Model.Song.prototype.removeTickable = function(index){
+    Model.Track.prototype.removeTickable = function(index){
         this.tickables.splice(index, 1);
     };
 
@@ -120,7 +120,7 @@ define('model', ['util'], function(Util){
      * @param  {Number} index
      * @param tickable
      */
-    Model.Song.prototype.insertTickable = function(index, tickable){
+    Model.Track.prototype.insertTickable = function(index, tickable){
         Util.insertToArray(this.tickables, index, tickable);
     };
 
@@ -128,7 +128,7 @@ define('model', ['util'], function(Util){
      * @param index
      * @returns {*}
      */
-    Model.Song.prototype.getTickable = function(index){
+    Model.Track.prototype.getTickable = function(index){
         return this.tickables[index];
     };
 
@@ -136,7 +136,7 @@ define('model', ['util'], function(Util){
      * Iterator by song tickables
      * @param {Function} callback
      */
-    Model.Song.prototype.eachNote = function(callback){
+    Model.Track.prototype.eachNote = function(callback){
         for(var i = 0; i < this.tickables.length; i++){
             callback(this.tickables[i], i);
         }
@@ -536,26 +536,26 @@ define('player',['require','model'],function(require){
                 self.endTone(key, octave, duration + delay);
             }
         };
-
-        self.startTone = function(key, octave, delay){
-            delay = delay ? delay : 0;
-            var noteValue = MIDI.keyToNote[key + octave];
-            try {
-                MIDI.noteOn(0, noteValue, self.volume, delay);
-            } catch(err) {
-                //aha
-            }
-        };
-
-        self.endTone = function(key, octave, delay){
-            delay = delay ? delay : 0;
-            var noteValue = MIDI.keyToNote[key + octave];
-            try{
-                MIDI.noteOff(0, noteValue, delay);
-            }catch (err){
-                //fuck MIDI
-            }
-        };
+//
+//        self.startTone = function(key, octave, delay){
+//            delay = delay ? delay : 0;
+//            var noteValue = MIDI.keyToNote[key + octave];
+//            try {
+//                MIDI.noteOn(0, noteValue, self.volume, delay);
+//            } catch(err) {
+//                //aha
+//            }
+//        };
+//
+//        self.endTone = function(key, octave, delay){
+//            delay = delay ? delay : 0;
+//            var noteValue = MIDI.keyToNote[key + octave];
+//            try{
+//                MIDI.noteOff(0, noteValue, delay);
+//            }catch (err){
+//                //fuck MIDI
+//            }
+//        };
     };
 
     return new Player();
@@ -596,7 +596,7 @@ define('parser',['model'], function(Model){
     var Parser = function (view){
 
         /**
-         * @param {Song} song
+         * @param {Track} song
          * @returns {string}
          */
         this.parse = function(song){
@@ -813,7 +813,7 @@ define('serializer/json-serializer',[],function(){
             return new OSTISMusic.BarNote(value.type)
         }
         if(value.hasOwnProperty('tickables')){
-            return new OSTISMusic.Song(value.tickables);
+            return new OSTISMusic.Track(value.tickables);
         }
         if (value.hasOwnProperty('notes')
             && value.hasOwnProperty('duration')) {
@@ -836,7 +836,7 @@ function(Model, View, SongPlayer, Util, Parser, Instruments, Serializer){
     var Editor = function (){
 
         var self = this;
-        this.song = new Model.Song();
+        this.song = new Model.Track();
         this.view = new View();
         var vextab = new Vex.Flow.VexTab(this.view.artist);
         var parser = new Parser(this.view);
@@ -1067,7 +1067,7 @@ require(['editor'], function(Editor){
     var rest = new Model.Rest(1);
 
     var arr = [c1, c2, c3, rest];
-    app.song = new Model.Song(arr, 2);
+    app.song = new Model.Track(arr, 2);
     app.update();
 });
 

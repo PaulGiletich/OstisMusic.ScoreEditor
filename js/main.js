@@ -11,7 +11,8 @@ require(['editor'], function(Editor){
     var rest = new Model.Rest(1);
 
     var arr = [c1, c2, c3, rest];
-    app.song = new Model.Song(arr, 2);
+    var track = new Model.Track(arr, 2);
+    app.song = track;//new Model.Song([track]);
     app.update();
 });
 

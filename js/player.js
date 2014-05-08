@@ -10,11 +10,9 @@ define(function(require){
         }
         Player.prototype.instance = self;
 
-        var volume = 127;
-
         MIDI.loadPlugin({
             soundfontUrl: "./soundfont/",
-            instrument: "acoustic_grand_piano",
+            instruments: ["acoustic_grand_piano", "synth_drum" ],
             callback: function () {
                 $(document).trigger('playerReady');
             }
@@ -23,11 +21,31 @@ define(function(require){
         self.playChord = function(chord, duration, delay){
             if(chord instanceof Model.Rest) return;
             delay = delay ? delay : 0;
-            for(var i = 0; i < chord.notes.length; i++){
-                var key = chord.notes[i].key,
-                    octave = chord.notes[i].octave;
-                self.startTone(key, octave, delay);
-                self.endTone(key, octave, duration + delay);
+            self.startChord(chord, delay);
+            self.endChord(chord, duration + delay);
+        };
+
+        self.startChord = function(chord, delay){
+            var tones = _.map(chord.notes, function (note) {
+                return MIDI.keyToNote[note.key + note.octave];
+            });
+            delay = delay ? delay : 0;
+            try {
+                MIDI.chordOn(0, tones, self.volume, delay);
+            } catch(err) {
+                console.log(err);
+            }
+        };
+
+        self.endChord = function(chord, delay){
+            var tones = _.map(chord.notes, function (note) {
+                return MIDI.keyToNote[note.key + note.octave];
+            });
+            delay = delay ? delay : 0;
+            try{
+                MIDI.chordOff(0, tones, delay);
+            }catch (err){
+                console.log(err);
             }
         };
 
@@ -37,7 +55,7 @@ define(function(require){
             try {
                 MIDI.noteOn(0, noteValue, self.volume, delay);
             } catch(err) {
-                //aha
+                console.log(err);
             }
         };
 
@@ -47,7 +65,7 @@ define(function(require){
             try{
                 MIDI.noteOff(0, noteValue, delay);
             }catch (err){
-                //fuck MIDI
+                console.log(err);
             }
         };
     };

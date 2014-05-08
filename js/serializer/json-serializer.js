@@ -24,7 +24,7 @@ define(function(){
             return new OSTISMusic.BarNote(value.type)
         }
         if(value.hasOwnProperty('tickables')){
-            return new OSTISMusic.Song(value.tickables);
+            return new OSTISMusic.Track(value.tickables);
         }
         if (value.hasOwnProperty('notes')
             && value.hasOwnProperty('duration')) {
