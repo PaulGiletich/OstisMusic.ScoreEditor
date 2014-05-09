@@ -1,4 +1,70 @@
 
+define('model/note',['require'],function(require){
+
+    var Note = function (key, octave, opts){
+        this.key = key;
+        this.octave = octave;
+        if(opts){
+            this.flat = opts['flat'];
+            this.sharp = opts['sharp'];
+        }
+    };
+
+    return Note;
+});
+
+define('model/chord',['require'],function(require){
+
+    var Chord = function (duration, notes){
+        this.duration = duration;
+        this.notes = [];
+        if(notes){
+            this.notes = notes.slice();
+        }
+    };
+
+    return Chord;
+});
+
+define('model/bar-note',['require'],function(require){
+
+    var BarNote = function (type){
+        var types = {
+            "SINGLE": "|",
+            "DOUBLE": "=||",
+            "END"   : "=|=",
+            "RBEGIN": "=|:",
+            "REND"  : "=:|"
+        };
+
+        if(!type in types){
+            throw "Incorrect bar type";
+        }
+
+        this.type = type;
+    };
+
+    return BarNote;
+});
+
+define('model/rest',['require'],function(require){
+
+    var Rest = function(duration){
+        this.duration = duration;
+    };
+
+    return Rest;
+});
+
+define('model/song',['require'],function(require){
+
+    var Song = function (tracks) {
+        this.tracks = tracks;
+    };
+
+    return Song;
+});
+
 define('util',{
     contains: function contains(rect, point){
         return (rect.x < point.x  &&
@@ -39,110 +105,48 @@ define('util',{
     }
 
 });
-define('model', ['util'], function(Util){
-    var Model = {};
+define('model/track',['require','util'],function(require){
+    var Util = require('util');
 
-    /**
-     * @param {String} key
-     * @param {Number} octave
-     * @param {{flat: Boolean, sharp: Boolean}} opts
-     * @constructor
-     */
-    Model.Note = function (key, octave, opts){
-        this.key = key;
-        this.octave = octave;
-        if(opts){
-            this.flat = opts['flat'];
-            this.sharp = opts['sharp'];
-        }
-    };
-
-    /**
-     * @param {String} type
-     * @constructor
-     */
-    Model.BarNote = function (type){
-        var types = {
-            "SINGLE": "|",
-            "DOUBLE": "=||",
-            "END"   : "=|=",
-            "RBEGIN": "=|:",
-            "REND"  : "=:|"
-        };
-
-        if(!type in types){
-            throw "Incorrect bar type";
-        }
-
-        this.type = type;
-    };
-
-    /**
-     * @param {Number} duration
-     * @param {Model.Note[]} notes
-     * @constructor
-     */
-    Model.Chord = function (duration, notes){
-        this.duration = duration;
-        this.notes = [];
-        if(notes){
-            this.notes = notes.slice();
-        }
-    };
-
-    /**
-     *
-     * @param {Number} duration
-     * @constructor
-     */
-    Model.Rest = function(duration){
-        this.duration = duration;
-    };
-
-
-    /**
-     * @param tickables
-     * @constructor
-     */
-    Model.Track = function(tickables, tempo){
+    var Track = function(tickables, tempo, instrument){
         this.tickables = tickables ? tickables : [];
         this.tempo = tempo;
+        this.instrument = instrument;
     };
 
-    /**
-     * @param {Number} index
-     */
-    Model.Track.prototype.removeTickable = function(index){
+    Track.prototype.removeTickable = function(index){
         this.tickables.splice(index, 1);
     };
 
-    /**
-     * @param  {Number} index
-     * @param tickable
-     */
-    Model.Track.prototype.insertTickable = function(index, tickable){
+    Track.prototype.insertTickable = function(index, tickable){
         Util.insertToArray(this.tickables, index, tickable);
     };
 
-    /**
-     * @param index
-     * @returns {*}
-     */
-    Model.Track.prototype.getTickable = function(index){
+    Track.prototype.getTickable = function(index){
         return this.tickables[index];
     };
 
-    /**
-     * Iterator by song tickables
-     * @param {Function} callback
-     */
-    Model.Track.prototype.eachNote = function(callback){
+    Track.prototype.eachNote = function(callback){
         for(var i = 0; i < this.tickables.length; i++){
             callback(this.tickables[i], i);
         }
     };
 
-    return Model;
+    return Track;
+});
+
+define('model',['require','model/note','model/chord','model/bar-note','model/rest','model/song','model/track'],function(require){
+    // This is simply namespace for mass including.
+    //      can't wait for ES6 modules :(
+
+    return {
+        Note    :   require('model/note'),
+        Chord   :   require('model/chord'),
+        BarNote :   require('model/bar-note'),
+        Rest    :   require('model/rest'),
+        Song    :   require('model/song'),
+        Track   :   require('model/track')
+    };
 });
 
 define('canvas-extensions',[],function(){
@@ -231,7 +235,7 @@ function(Util, Model){
      */
     var View = function (){
         var self = this;
-        var canvas = $("#canvas")[0]; canvas.width = $(".canvas-layers").innerWidth() - 100;
+        var canvas = $("#canvas")[0]; canvas.width = $(".canvas-layers").innerWidth() - 50;
         var hoverCanvas = $("#hoverCanvas")[0];
         var selectionCanvas = $("#selectionCanvas")[0];
 
@@ -516,11 +520,9 @@ define('player',['require','model'],function(require){
         }
         Player.prototype.instance = self;
 
-        var volume = 127;
-
         MIDI.loadPlugin({
             soundfontUrl: "./soundfont/",
-            instrument: "acoustic_grand_piano",
+            instruments: ["acoustic_grand_piano", "synth_drum" ],
             callback: function () {
                 $(document).trigger('playerReady');
             }
@@ -529,33 +531,53 @@ define('player',['require','model'],function(require){
         self.playChord = function(chord, duration, delay){
             if(chord instanceof Model.Rest) return;
             delay = delay ? delay : 0;
-            for(var i = 0; i < chord.notes.length; i++){
-                var key = chord.notes[i].key,
-                    octave = chord.notes[i].octave;
-                self.startTone(key, octave, delay);
-                self.endTone(key, octave, duration + delay);
+            self.startChord(chord, delay);
+            self.endChord(chord, duration + delay);
+        };
+
+        self.startChord = function(chord, delay){
+            var tones = _.map(chord.notes, function (note) {
+                return MIDI.keyToNote[note.key + note.octave];
+            });
+            delay = delay ? delay : 0;
+            try {
+                MIDI.chordOn(0, tones, self.volume, delay);
+            } catch(err) {
+                console.log(err);
             }
         };
-//
-//        self.startTone = function(key, octave, delay){
-//            delay = delay ? delay : 0;
-//            var noteValue = MIDI.keyToNote[key + octave];
-//            try {
-//                MIDI.noteOn(0, noteValue, self.volume, delay);
-//            } catch(err) {
-//                //aha
-//            }
-//        };
-//
-//        self.endTone = function(key, octave, delay){
-//            delay = delay ? delay : 0;
-//            var noteValue = MIDI.keyToNote[key + octave];
-//            try{
-//                MIDI.noteOff(0, noteValue, delay);
-//            }catch (err){
-//                //fuck MIDI
-//            }
-//        };
+
+        self.endChord = function(chord, delay){
+            var tones = _.map(chord.notes, function (note) {
+                return MIDI.keyToNote[note.key + note.octave];
+            });
+            delay = delay ? delay : 0;
+            try{
+                MIDI.chordOff(30, tones, delay);
+            }catch (err){
+                console.log(err);
+            }
+        };
+
+        self.startTone = function(key, octave, delay){
+            delay = delay ? delay : 0;
+            var noteValue = MIDI.keyToNote[key + octave];
+            try {
+                MIDI.noteOn(0, noteValue, self.volume, delay);
+            } catch(err) {
+                console.log(err);
+            }
+        };
+
+        self.endTone = function(key, octave, delay){
+            delay = delay ? delay : 0;
+            var noteValue = MIDI.keyToNote[key + octave];
+            try{
+                MIDI.noteOff(0, noteValue, delay);
+            }catch (err){
+                console.log(err);
+            }
+        };
     };
 
     return new Player();
@@ -565,21 +587,30 @@ define('song-player',['require','player'],function(require){
     var Player = require('player');
 
     var SongPlayer = {
+
         play: function (song, fromNote, toNote) {
+            var self = this;
+            self.playingSequenceId = _.uniqueId();
+
             if (fromNote === undefined) fromNote = 0;
             if (toNote === undefined) toNote = song.tickables.length -1;
             var offset = 0;
             for (var i = fromNote; i <= toNote; i++){
                 var tickable = song.tickables[i];
                 var time = song.tempo / tickable.duration;
-                (function (tickable, time, i) {
+                (function (tickable, time, i, playingSequenceId) {
                     setTimeout(function () {
+                        if(self.playingSequenceId != playingSequenceId) return;
                         Player.playChord(tickable, time);
                         $(document).trigger('chordPlayed', i);
                     }, offset * 1000);
-                })(tickable, time, i);
+                })(tickable, time, i, self.playingSequenceId);
                 offset += time;
             }
+        },
+
+        stop: function() {
+            this.playingSequenceId = null;
         }
     };
 
@@ -1067,8 +1098,10 @@ require(['editor'], function(Editor){
     var rest = new Model.Rest(1);
 
     var arr = [c1, c2, c3, rest];
-    app.song = new Model.Track(arr, 2);
+    var track = new Model.Track(arr, 2);
+    app.song = track;//new Model.Song([track]);
     app.update();
 });
+
 
 define("main", function(){});
