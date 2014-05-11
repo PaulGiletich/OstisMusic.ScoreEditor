@@ -14,10 +14,9 @@ gulp.task('less', function () {
 gulp.task('rjs', function() {
     rjs({
         optimize: true,
-        name: 'main',
-        baseUrl: 'js',
-        out: 'main.js',
-        shim: {}
+        baseUrl:'js',
+        mainConfigFile: 'js/main.js',
+        out: 'main.js'
     })
     .pipe(gulp.dest('./build/js/'));
 });

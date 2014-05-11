@@ -1,9 +1,9 @@
-define(['model', 'song-player'], function(Model, SongPlayer){
+define(['../model/all', 'es6!song-player'], function(Model, SongPlayer){
     "use strict";
 
-    var RestCreationInstrument = function(editor){
+    var RestCreationInstrument = function(editor, $scope){
 
-        this.scoreClick = function(e){
+        $scope.scoreClick = function(e){
             var coords = editor.view.toLocalCoords(e);
             var note = editor.view.findNote(coords);
             if(note){
@@ -37,7 +37,7 @@ define(['model', 'song-player'], function(Model, SongPlayer){
 
         function addRest(point){
             var prevNote = editor.view.findPreviousNote(point);
-            var tickable = new Model.Rest(editor.newNoteDuration);
+            var tickable = new Model.Rest(editor.noteDuration);
             editor.song.insertTickable(prevNote.index+1, tickable);
             editor.update();
             editor.view.setSelectedNote(prevNote.index+1);

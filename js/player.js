@@ -1,49 +1,46 @@
 define(function(require){
-    "use strict";
-    var Model = require('model');
+    var Model = require('model/all');
 
     var Player = function(){
         var self = this;
+        self.channel = 0;
+        self.loadedInstruments = [];
 
         if(Player.prototype.instance) {
             return Player.prototype.instance;
         }
         Player.prototype.instance = self;
 
-        MIDI.loadPlugin({
-            soundfontUrl: "./soundfont/",
-            instruments: ["acoustic_grand_piano", "synth_drum" ],
-            callback: function () {
-                $(document).trigger('playerReady');
-            }
-        });
-
-        self.playChord = function(chord, duration, delay){
+        self.playChord = function(chord, duration, options){
             if(chord instanceof Model.Rest) return;
-            delay = delay ? delay : 0;
-            self.startChord(chord, delay);
-            self.endChord(chord, duration + delay);
+            self.startChord(chord, options);
+            self.endChord(chord, duration, options);
         };
 
-        self.startChord = function(chord, delay){
+        function getTones(chord, options) {
             var tones = _.map(chord.notes, function (note) {
-                return MIDI.keyToNote[note.key + note.octave];
+                var tone = MIDI.keyToNote[note.key + note.octave];
+                if (options.octaveShift) {
+                    tone += options.octaveShift * 12;
+                }
+                return tone;
             });
-            delay = delay ? delay : 0;
+            return tones;
+        }
+
+        self.startChord = function(chord, options){
+            var tones = getTones(chord, options);
             try {
-                MIDI.chordOn(0, tones, self.volume, delay);
+                MIDI.chordOn(self.channel, tones, self.volume, 0);
             } catch(err) {
                 console.log(err);
             }
         };
 
-        self.endChord = function(chord, delay){
-            var tones = _.map(chord.notes, function (note) {
-                return MIDI.keyToNote[note.key + note.octave];
-            });
-            delay = delay ? delay : 0;
+        self.endChord = function(chord, duration, options){
+            var tones = getTones(chord, options);
             try{
-                MIDI.chordOff(0, tones, delay);
+                MIDI.chordOff(self.channel, tones, duration);
             }catch (err){
                 console.log(err);
             }
@@ -53,7 +50,7 @@ define(function(require){
             delay = delay ? delay : 0;
             var noteValue = MIDI.keyToNote[key + octave];
             try {
-                MIDI.noteOn(0, noteValue, self.volume, delay);
+                MIDI.noteOn(self.channel, noteValue, self.volume, delay);
             } catch(err) {
                 console.log(err);
             }
@@ -63,11 +60,33 @@ define(function(require){
             delay = delay ? delay : 0;
             var noteValue = MIDI.keyToNote[key + octave];
             try{
-                MIDI.noteOff(0, noteValue, delay);
+                MIDI.noteOff(self.channel, noteValue, delay);
             }catch (err){
                 console.log(err);
             }
         };
+
+        self.setInstrument = function(instr){
+            self.channel = self.loadedInstruments.indexOf(instr);
+        };
+
+        self.loadInstruments = function(instruments){
+            $(document).trigger('playerLoading');
+            var instrumentNames = _.map(instruments, function(instr){
+                return instr.id;
+            });
+            MIDI.loadPlugin({
+                soundfontUrl: "./soundfont/",
+                instruments: instrumentNames,
+                callback: function () {
+                    self.loadedInstruments = instruments;
+                    _.each(instruments, function(instrument, index) {
+                        MIDI.programChange(index, instrument.number)
+                    });
+                    $(document).trigger('playerReady');
+                }
+            });
+        }
     };
 
     return new Player();

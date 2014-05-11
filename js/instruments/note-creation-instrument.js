@@ -1,7 +1,7 @@
-define(['model', 'song-player'], function(Model, SongPlayer){
+define(['model/all', 'es6!song-player'], function(Model, SongPlayer){
     "use strict";
 
-    var NoteCreationInstrument = function(editor){
+    var NoteCreationInstrument = function(editor, $scope){
 
         this.scoreClick = function(e){
             var coords = editor.view.toLocalCoords(e);
@@ -10,10 +10,7 @@ define(['model', 'song-player'], function(Model, SongPlayer){
                 noteClicked(note);
                 return;
             }
-            var lastNote = editor.view.findPreviousNote(coords);
-            if(lastNote){
-                addNote(coords);
-            }
+            addNote(coords);
         };
 
         this.mouseMove = function(e){
@@ -23,25 +20,30 @@ define(['model', 'song-player'], function(Model, SongPlayer){
             if(note){
                 editor.view.highlightNote(note.view);
             }
-            else if (prevNote){
+            else {
                 coords.y = coords.y - coords.y % 5;
-                coords.x = prevNote.view.getAbsoluteX() + prevNote.view.getBoundingBox().w + 15;
+                //coords.x = prevNote.view.getAbsoluteX() + prevNote.view.getBoundingBox().w + 15;
                 editor.view.phantomNote(coords);
             }
         };
 
         function noteClicked(note){
-            $(document).trigger('playChord', note.index);
-            editor.view.setSelectedNote(note.index);
+            var ti = $scope.activeTrack.tickableByIndexInTrack(note.index);
+            SongPlayer.play($scope.song, ti, ti, true);
+            $scope.selection = [ti, ti];
         }
 
         function addNote(point){
-            var prevNote = editor.view.findPreviousNote(point);
             var note = editor.view.getNewNoteByPos(point);
-            var chord = new Model.Chord(editor.newNoteDuration, [note]);
-            editor.song.insertTickable(prevNote.index+1, chord);
-            editor.update();
-            editor.view.setSelectedNote(prevNote.index+1);
+            var chord = new Model.Chord(editor.noteDuration, [note]);
+
+            var prevNote = editor.view.findPreviousNote(point);
+            //if track empty ( todo )
+            if(!prevNote && !$scope.activeTrack.bars[0].tickables.length){
+                $scope.activeTrack.insertTickable(0, chord);
+            } else {
+                $scope.activeTrack.insertTickable(prevNote.index+1, chord);
+            }
         }
     };
 

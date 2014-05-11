@@ -1,23 +1,15 @@
-define(['model'], function(Model){
-    "use strict";
+define(['model/all'], function(Model){
 
-    /**
-     * Parser from app model to vextab
-     * @param {View} view - we need view here to access it's width and notesPerLine options
-     * @constructor
-     */
-    var Parser = function (view){
+    var Parser = function (){
 
-        /**
-         * @param {Track} song
-         * @returns {string}
-         */
-        this.parse = function(song){
+        this.parse = function(track, options){
             var result = "";
 
             var fillness = 0;
             var staveTickables = [];
-            song.eachNote(function(tickable, index){
+            for(var t of track.tickableIterator()){
+                var tickable = t.tickable;
+                var index = t.indexInTrack;
                 if(tickable instanceof Model.BarNote){
                     staveTickables.push(tickable.toString());
                 }
@@ -30,12 +22,14 @@ define(['model'], function(Model){
                     fillness += 1/tickable.duration;
                 }
 
-                if(staveTickables.length == view.notesPerLine && index != song.tickables.length-1){
-                    result += makeStave(staveTickables, view.getWidth());
+                if(staveTickables.length == options.notesPerLine){
+                    result += makeStave(staveTickables, options.width);
                     staveTickables = [];
                 }
-            });
-            result += makeStave(staveTickables, view.getWidth() * ((staveTickables.length+1)/(view.notesPerLine+1)));
+            }
+            if(staveTickables != []){
+                result += makeStave(staveTickables, options.width * ((staveTickables.length+1)/(options.notesPerLine+1)));
+            }
             return result;
         };
 

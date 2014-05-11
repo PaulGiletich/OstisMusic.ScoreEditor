@@ -1,5 +1,4 @@
 define(function(){
-    "use strict";
 
     /**
      * transforms event point coordinates relative to canvas

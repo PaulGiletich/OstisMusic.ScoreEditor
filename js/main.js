@@ -1,18 +1,10 @@
-require(['editor'], function(Editor){
-    "use strict";
-
-    var Model = require('model');
-
-    var app = new Editor();
-
-    var c1 = new Model.Chord(4, [new Model.Note('C', 5), new Model.Note('E', 5), new Model.Note('G', 5)]);
-    var c2 = new Model.Chord(4, [new Model.Note('F', 5), new Model.Note('B', 5)]);
-    var c3 = new Model.Chord(2, [new Model.Note('A', 4), new Model.Note('C', 5), new Model.Note('E', 5)]);
-    var rest = new Model.Rest(1);
-
-    var arr = [c1, c2, c3, rest];
-    var track = new Model.Track(arr, 2);
-    app.song = track;//new Model.Song([track]);
-    app.update();
+require.config({
+    baseUrl: "./js",
+    paths: {
+        'domReady': '../lib/requirejs-domready/domReady',
+        'amd-loader': '../lib/amd-loader/amd-loader',
+        'es6': '../lib/es6/es6',
+        'traceur-compiler': '../lib/es6/traceur-compiler'
+    },
+    deps: ['app']
 });
-

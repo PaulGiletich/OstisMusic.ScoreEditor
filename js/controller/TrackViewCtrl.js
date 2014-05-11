@@ -1,29 +1,43 @@
-define(['util', 'model', 'canvas-extensions'],
-function(Util, Model){
+define(['util', 'model/all', 'es6!parser', 'canvas-extensions'],
+function(Util, Model, Parser){
 
     /**
      * @constructor
      */
-    var View = function (){
+    var TrackViewCtrl = function ($scope){
         var self = this;
-        var canvas = $("#canvas")[0]; canvas.width = $(".canvas-layers").innerWidth() - 100;
+        
+        var canvas = $("#canvas")[0];
         var hoverCanvas = $("#hoverCanvas")[0];
         var selectionCanvas = $("#selectionCanvas")[0];
 
         var renderer = new Vex.Flow.Renderer(canvas, Vex.Flow.Renderer.Backends.CANVAS);
-        var selectedNote = null;
+        var artist = new Vex.Flow.Artist(0, 0, window.innerWidth); Vex.Flow.Artist.NOLOGO = true;
+        var vextab = new Vex.Flow.VexTab(artist);
 
-        self.artist = new Vex.Flow.Artist(0, 0, window.innerWidth); Vex.Flow.Artist.NOLOGO = true;
+        var parser = new Parser();
+
+        var selectedNote = null;
         self.notesPerLine = 8;
 
-        /**
-         * re-render view
-         */
-        this.update = function(){
-            self.artist.render(renderer);
-            hoverCanvas.width = selectionCanvas.width = canvas.width;
-            hoverCanvas.height = selectionCanvas.height  = canvas.height;
-            drawSelection();
+
+        self.update = function(){
+            try {
+                vextab.reset();
+                artist.reset();
+                vextab.parse(parser.parse($scope.activeTrack, {
+                    notesPerLine: self.notesPerLine,
+                    width: canvas.width
+                }));
+                artist.render(renderer);
+                hoverCanvas.width = selectionCanvas.width = canvas.width;
+                hoverCanvas.height = selectionCanvas.height  = canvas.height;
+                drawSelection();
+                $(".error").empty();
+            } catch (e) {
+                console.log(e);
+                $(".error").text(e.message);
+            }
         };
 
         /**
@@ -31,19 +45,19 @@ function(Util, Model){
          * @param event
          * @returns {}
          */
-        this.toLocalCoords = function(event){
+        self.toLocalCoords = function(event){
             return canvas.relMouseCoords(event);
         };
 
         /**
-         * iterator by each note of view. if you done with it, return true in callback, so it will not iterate more
+         * iterator by each note of view. if you done with iteration, return true in callback, so it will not iterate more
          * @param {Function} callback
          */
-        this.eachNote = function(callback){
+        self.eachTickable = function(callback){
             var curr_i = -1;
 
-            for (var si = 0; si < self.artist.staves.length; si++){
-                var stave = self.artist.staves[si];
+            for (var si = 0; si < artist.staves.length; si++){
+                var stave = artist.staves[si];
 
                 for (var vi = 0; vi < stave.note_voices.length; vi++){
                     var voice = stave.note_voices[vi];
@@ -61,17 +75,12 @@ function(Util, Model){
             }
         };
 
-        /**
-         * find note at specified position
-         * @param {{x: Number, y: Number}} point
-         * @returns {{index: Number, view: Vex.Flow.StaveNote}}
-         */
-        this.findNote = function(point){
+        self.findNote = function(point){
             var contains = Util.contains;
             var enlarge = Util.enlarge;
 
             var result = null;
-            this.eachNote(function(note, index){
+            self.eachTickable(function(note, index){
                 if(contains(enlarge(note.getBoundingBox(), 8), point)){
                     result = {index: index, view: note};
                     return true;
@@ -81,25 +90,20 @@ function(Util, Model){
             return result;
         };
 
-        /**
-         * find previous note by specified position
-         * @param {{x: Number, y: Number}} point
-         * @returns {{index: Number, view: Vex.Flow.StaveNote}}
-         */
-        this.findPreviousNote = function(point){
-            var stave = this.findStave(point);
+        self.findPreviousNote = function(point){
+            var stave = self.findStave(point);
             if(!stave) return null;
 
             var result = null;
-            this.eachNote(function(note, index){
+            self.eachTickable(function(note, index){
                 if (note.getStave() == stave.note && note.getAbsoluteX() > point.x) {
                     return true;
                 }
-                //this happens in the end of line, next note x is not greater, but note is actually previous
+                //self happens in the end of line, next note x is not greater, but note is actually previous
                 if (result && result.view.getStave() == stave.note && note.getStave() != stave.note) {
                     return true;
                 }
-                //this happens at the start, when there is no previous note
+                //self happens at the start, when there is no previous note
                 if(note.getStave() == stave.note && index == 0 && note.getAbsoluteX() > point.x){
                     result = {index: -1};
                     return true;
@@ -115,11 +119,11 @@ function(Util, Model){
          * @param {{x: Number, y: Number}} point
          * @returns {Vex.Flow.Stave}
          */
-        this.findStave = function(point){
+        self.findStave = function(point){
             var contains = Util.contains;
 
-            for (var i = 0; i < self.artist.staves.length; i++){
-                var stave = self.artist.staves[i];
+            for (var i = 0; i < artist.staves.length; i++){
+                var stave = artist.staves[i];
                 var boundingBox = stave.note.getBoundingBox();
                 boundingBox.h -= 20;
                 if(contains(boundingBox, point)){
@@ -134,8 +138,8 @@ function(Util, Model){
          * @param {{x: Number, y: Number}} point
          * @returns {OSTISMusic.Note}
          */
-        this.getNewNoteByPos = function(point){
-            var stave = this.findStave(point).note;
+        self.getNewNoteByPos = function(point){
+            var stave = self.findStave(point).note;
 
             // spacing between two neighbour notes
             var spacing = stave.options.spacing_between_lines_px / 2;
@@ -154,11 +158,7 @@ function(Util, Model){
             return null;
         };
 
-        /**
-         * draws phantom note at point
-         * @param {{x: Number, y: Number}} point
-         */
-        this.phantomNote = function(point){
+        self.phantomNote = function(point){
             var ctx=hoverCanvas.getContext("2d");
             ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
             ctx.globalAlpha = 0.5;
@@ -167,11 +167,7 @@ function(Util, Model){
                 0,0, true, 5);
         };
 
-        /**
-         * draws phantom rest at specified point
-         * @param {{x: Number, y: Number}} p
-         */
-        this.phantomRest = function(p){
+        self.phantomRest = function(p){
             var ctx=hoverCanvas.getContext("2d");
             ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
             ctx.globalAlpha = 0.5;
@@ -182,11 +178,7 @@ function(Util, Model){
                 0,stave.getYForLine(3) - stave.getYForLine(1), true, 5);
         };
 
-        /**
-         * highlights specified note
-         * @param {Vex.Flow.StaveNote} note
-         */
-        this.highlightNote = function(note){
+        self.highlightNote = function(note){
             var ctx=hoverCanvas.getContext("2d");
             ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
             if(!note) return;
@@ -198,57 +190,9 @@ function(Util, Model){
                 rect.w,rect.h, true, 6);
         };
 
-        /**
-         * function called when note is playing
-         * @param {{index: Number, view: Vex.Flow.StaveNote}} note
-         */
-        this.playingNote = function(note){
-            this.setSelectedNote(note.index);//TODO proper playing note indication
-        };
-
-        /**
-         *
-         * @param {Number} index
-         */
-        this.setSelectedNote = function(index){
-            if (index < 0) return;
-            if (this.getTickable(index) == null) {
-                this.setSelectedNote(index-1);
-                return;
-            }
-            selectedNote = index;
-            drawSelection();
-        };
-
-        /**
-         * @returns {Number}
-         */
-        this.getSelectedNote = function(){
-            return selectedNote;
-        };
-
-        /**
-         * @returns {Number}
-         */
-        this.getWidth = function(){
-            return canvas.width;
-        };
-
-        /**
-         * @param {Number} width
-         */
-        this.setWidth = function(width){
-            canvas.width = width;
-            this.update();
-        };
-
-        /**
-         * @param {Number} index
-         * @returns {Vex.Flow.Tickable}
-         */
-        this.getTickable = function(index){
+        self.getTickable = function(index){
             var result = null;
-            this.eachNote(function(note, i){
+            self.eachTickable(function(note, i){
                 if(i == index){
                     result = {index: i, view: note};
                     return true;
@@ -258,14 +202,11 @@ function(Util, Model){
             return result;
         };
 
-        /**
-         * draws current selection highlight
-         */
         function drawSelection(){
             var ctx = selectionCanvas.getContext("2d");
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            if(selectedNote != null){
-                var rect = self.getTickable(selectedNote).view.getBoundingBox();
+            if($scope.selection != null){
+                var rect = self.getTickable($scope.selection[0].indexInTrack).view.getBoundingBox();
                 ctx.globalAlpha = 0.3;
                 ctx.fillStyle = "#0000FF";
                 ctx.roundRect(rect.x, rect.y,
@@ -273,8 +214,26 @@ function(Util, Model){
             }
         }
 
+        $scope.$watch('activeTrack', function(){
+            self.update();
+        }, true);
+
+        $scope.$watch('selection', function (){
+            drawSelection()
+        }, true);
+
+        $(document).on('chordPlayed', function(e, i){
+            self.highlightNote(self.getTickable(i.indexInTrack).view);
+        });
+
+        window.addEventListener('resize', onResize);
+        var onResize = function updateResize() {
+            canvas.width = $(".canvas-layers").innerWidth() - 100;
+            self.update();
+        };
+        onResize();
     };
 
-    return View;
+    return TrackViewCtrl;
 });
 
