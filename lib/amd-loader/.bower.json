@@ -1,0 +1,14 @@
+{
+  "name": "amd-loader",
+  "version": "0.0.1",
+  "homepage": "https://github.com/guybedford/amd-loader",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.1",
+    "commit": "7fb36562c0fa1a5b0936945e19e63ca27b5395bd"
+  },
+  "_source": "git://github.com/guybedford/amd-loader.git",
+  "_target": "0.0.1",
+  "_originalSource": "guybedford/amd-loader"
+}

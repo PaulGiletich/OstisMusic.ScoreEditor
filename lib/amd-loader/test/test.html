@@ -1,0 +1,10 @@
+<!doctype html>
+<script src="require.js"></script>
+<script>
+  require(['cs!test'], function() {
+    alert('loaded local file');
+  });
+  require(['cs!http://dev.jspm.io/test.coffee'], function() {
+    alert('loaded using CORS');
+  });
+</script>
