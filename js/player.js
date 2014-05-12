@@ -55,7 +55,12 @@ define(function(require){
 
         self.startTone = function(key, octave, delay, options){
             delay = delay ? delay : 0;
-            var noteValue = MIDI.keyToNote[key + octave];
+            var noteValue;
+            if(typeof key === 'number'){
+                noteValue = key;
+            } else {
+                noteValue = MIDI.keyToNote[key + octave];
+            }
             try {
                 MIDI.noteOn(self.channel, noteValue, self.volume, delay);
             } catch(err) {

@@ -1,0 +1,9 @@
+<div class="fretboard instrument-board" ng-controller="FretboardCtrl">
+    <div ng-repeat="fret in range(0, 24)" class="fret{{fret}}">
+        <table class="fretboard-fret">
+            <tr ng-repeat="string in range(1,7)">
+                <td class="fret-string" ng-click="playString(string, fret)">a</td>
+            </tr>
+        </table>
+    </div>
+</div>

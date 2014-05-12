@@ -46,10 +46,10 @@ define(function(require){
             }
 
             function stopKey(){
+                fired = false;
                 $key.removeClass('key-pressed');
                 if($scope.sustain) return;
                 Player.endTone(note, octave);
-                fired = false;
             }
         }
 

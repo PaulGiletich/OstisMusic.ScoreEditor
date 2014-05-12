@@ -4,6 +4,7 @@ define(function (require) {
     window.FileCtrl = require('controller/FileCtrl');
     window.TrackViewCtrl = require('controller/TrackViewCtrl');
     window.KeyboardCtrl = require('controller/KeyboardCtrl');
+    window.FretboardCtrl = require('controller/FretboardCtrl');
 
     var app = angular.module("app", ['ui.bootstrap']);
     require(['domReady'], function(document){

@@ -106,9 +106,7 @@ define(function (require) {
                     })
                 })
                 .on('playerLoading', function () {
-                    $scope.$apply(function(){
-                        $scope.playerReady = false;
-                    });
+                    $scope.playerReady = false;
                 });
         }
 

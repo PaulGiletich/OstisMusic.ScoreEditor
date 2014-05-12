@@ -118,7 +118,7 @@
                     <div class="instruments panel panel-default">
                         <div class="instrument" >
                             <button data-toggle="modal" data-target="#keyboardModal" class="btn btn-default">MIDI keyboard</button>
-                            <button class="btn btn-default" >Guitar fretboard</button>
+                            <button data-toggle="modal" data-target="#fretboardModal" class="btn btn-default" >Guitar fretboard</button>
                         </div>
                     </div>
                 </tab>
@@ -151,17 +151,15 @@
 </div>
 <div class="modal fade" id="keyboardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width: 785px">
-        <div class="modal-content" style="background-color: #424242" ng-controller="KeyboardCtrl">
-            <div class="keyboard">
-            </div>
-            <div class="keyboard-controls">
-                <input ng-model="sustain" class="switch-checkbox" type="checkbox" name="onoffswitch" id="sustain-switch">
-                <label class="switch-label" for="sustain-switch">
-                    <div class="slider">
-
-                    </div>
-                </label>
-            </div>
+        <div class="modal-content" >
+            <ng-include src="'views/keyboard.html'"></ng-include>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fretboardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 1200px">
+        <div class="modal-content">
+            <ng-include src="'views/fretboard.html'"></ng-include>
         </div>
     </div>
 </div>

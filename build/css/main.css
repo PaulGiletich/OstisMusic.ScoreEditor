@@ -34,6 +34,200 @@ body {
   top: 0;
   left: 0;
 }
+.instrument-board {
+  margin: 20px;
+}
+.modal-content {
+  background-color: #424242;
+}
+
+@charset "utf-8";
+td.fret-string {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+  padding: 0px;
+}
+.fretboard-fret {
+  width: 100%;
+  height: 141px;
+  margin: 0px;
+}
+/*p{
+	margin:0px;
+	padding:4px 0px;
+	border:1px solid #FFFFFF;
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}*/
+/*.one, .two, .three, .four, .five, .six {
+	background-color:red;
+}*/
+.fretboard {
+  /*background-size:100% auto;*/
+  width: 1018px;
+  background: url(../../images/fretboard.jpg) no-repeat center;
+  position: relative;
+  display: block;
+  height: 141px;
+  margin: 0px;
+  padding: 0px;
+}
+.fret0 {
+  width: 3%;
+}
+.fret1 {
+  position: absolute;
+  top: 0px;
+  left: 3%;
+  width: 5.841%;
+}
+.fret2 {
+  position: absolute;
+  top: 0px;
+  left: 8.84%;
+  width: 6.974%;
+}
+.fret3 {
+  position: absolute;
+  top: 0px;
+  left: 15.82%;
+  width: 6.58%;
+}
+.fret4 {
+  position: absolute;
+  top: 0px;
+  left: 22.40%;
+  width: 6.0%;
+}
+.fret5 {
+  position: absolute;
+  top: 0px;
+  left: 28.4%;
+  width: 5.796%;
+}
+.fret6 {
+  position: absolute;
+  top: 0px;
+  left: 34.196%;
+  width: 5.697%;
+}
+.fret7 {
+  position: absolute;
+  top: 0px;
+  left: 39.893%;
+  width: 5.108%;
+}
+.fret8 {
+  position: absolute;
+  top: 0px;
+  left: 45.001%;
+  width: 4.912%;
+}
+.fret9 {
+  position: absolute;
+  top: 0px;
+  left: 49.914%;
+  width: 4.519%;
+}
+.fret10 {
+  position: absolute;
+  top: 0px;
+  left: 54.433%;
+  width: 4.322%;
+}
+.fret11 {
+  position: absolute;
+  top: 0px;
+  left: 58.755%;
+  width: 4.420%;
+}
+.fret12 {
+  position: absolute;
+  top: 0px;
+  left: 63.175%;
+  width: 4.028%;
+}
+.fret13 {
+  position: absolute;
+  top: 0px;
+  left: 67.203%;
+  width: 3.929%;
+}
+.fret14 {
+  position: absolute;
+  top: 0px;
+  left: 71.132%;
+  width: 3.536%;
+}
+.fret15 {
+  position: absolute;
+  top: 0px;
+  left: 74.688%;
+  width: 3.438%;
+}
+.fret16 {
+  position: absolute;
+  top: 0px;
+  left: 78.106%;
+  width: 3.438%;
+}
+.fret17 {
+  position: absolute;
+  top: 0px;
+  left: 81.544%;
+  width: 3.045%;
+}
+.fret18 {
+  position: absolute;
+  top: 0px;
+  left: 84.589%;
+  width: 2.947%;
+}
+.fret19 {
+  position: absolute;
+  top: 0px;
+  left: 87.536%;
+  width: 2.652%;
+}
+.fret20 {
+  position: absolute;
+  top: 0px;
+  left: 90.188%;
+  width: 2.456%;
+}
+.fret21 {
+  position: absolute;
+  top: 0px;
+  left: 92.644%;
+  width: 2.554%;
+}
+.fret22 {
+  position: absolute;
+  top: 0px;
+  left: 95.198%;
+  width: 2.259%;
+}
+.fret23 {
+  position: absolute;
+  top: 0px;
+  left: 97.457%;
+  width: 2.543%;
+}
+/*.one .two .three .four .five{
+	width:100%;
+}
+.one, .two, .three, .four, .five, .six p{
+	border-right: 1px solid #FFFFFF;
+}
+.one, .two, .three, .four, .five p{
+	border-bottom: 1px solid #FFFFFF;
+}
+/*.one p{
+padding: 12px 0px;
+}*/
 
 .switch-checkbox {
   display: none;
@@ -88,7 +282,6 @@ body {
 .keyboard {
   -moz-user-select: none;
   -webkit-user-select: none;
-  margin: 20px;
 }
 .keyboard:hover {
   cursor: pointer;
