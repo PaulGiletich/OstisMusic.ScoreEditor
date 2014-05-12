@@ -88,9 +88,13 @@ body {
 .keyboard {
   -moz-user-select: none;
   -webkit-user-select: none;
+  margin: 20px;
 }
 .keyboard:hover {
   cursor: pointer;
+}
+.keyboard-controls {
+  margin: 18px;
 }
 .key {
   height: 200px;

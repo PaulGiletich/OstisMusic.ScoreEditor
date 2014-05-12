@@ -30,12 +30,13 @@
     <script type="text/javascript" src="lib/select2/select2.js"></script>
     <script src="lib/angular/angular.js"></script>
     <script type="text/javascript" src="lib/angular-ui-select2/src/select2.js"></script>
+    <script type="text/javascript" src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 
     <script data-main="js/main" src="lib/requirejs/require.js"></script>
 </head>
 
-<body ng-cloak>
-<div ng-controller="EditorCtrl as editor">
+<body ng-cloak ng-controller="EditorCtrl as editor">
+<div>
     <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">OSTISMusic Score editor</a>
@@ -61,57 +62,67 @@
     </nav>
     <div class="row viewport">
         <div class="col-xs-3">
-            <ul class="nav nav-tabs">
-                <li><a>Instruments</a></li>
-            </ul>
-            <div class="instruments panel panel-default form-horizontal">
+            <tabset justified="true">
+                <tab heading="Tools">
+                    <div class="instruments panel panel-default">
+                        <div class="instrument" >
+                            Tickable type:<br>
+                            <div class="tickables btn-group">
+                                <button class="tickable note btn btn-default active">Note</button>
+                                <button class="tickable rest btn btn-default" >Rest</button>
+                            </div>
+                        </div>
 
-                <div class="instrument" >
-                    Tickable type:<br>
-                    <div class="tickables btn-group">
-                        <button class="tickable note btn btn-default active">Note</button>
-                        <button class="tickable rest btn btn-default" >Rest</button>
+                        <div class="instrument" >
+                            Duration:<br>
+                            <div class="durations btn-group">
+                                <button ng-repeat="i in [1,2,4,8,16,32]"
+                                        class="item btn btn-default {{editor.noteDuration == i ? 'active': ''}}"
+                                        value="{{i}}"
+                                        ng-click="editor.setNoteDuration(i)"
+                                        >{{i}}</button>
+                            </div>
+                        </div>
+
+                        <div class="instrument" >
+                            Accidentals:<br>
+                            <div class="accidentals btn-group">
+                                <button class="accidental-sharp item btn btn-default">#</button>
+                                <button class="accidental-none item btn btn-default">none</button>
+                                <button class="accidental-flat item btn btn-default">b</button>
+                            </div>
+                        </div>
+
+                        <div class="instrument" >
+                            Instrument:<br>
+
+                            <select class="form-control" ng-model="activeTrack.instrument"
+                                    ng-options="instr.instrument for (index, instr) in editor.getAllInstruments()"></select>
+                        </div>
+
+                        <div class="row instrument">
+                            <div class="col-md-6" >
+                                Tempo:<br>
+                                <input style="width: 100px" type="number" class="form-control" ng-model="song.tempo"/>
+                            </div>
+                            <div class="col-md-6" >
+                                Octave shift:<br>
+                                <input style="width: 100px" type="number" class="form-control" ng-model="activeTrack.options.octaveShift"/>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-                <div class="instrument" >
-                    Duration:<br>
-                    <div class="durations btn-group">
-                        <button ng-repeat="i in [1,2,4,8,16,32]"
-                                class="item btn btn-default {{editor.noteDuration == i ? 'active': ''}}"
-                                value="{{i}}"
-                                ng-click="editor.setNoteDuration(i)"
-                                >{{i}}</button>
+                </tab>
+                </tabset>
+            <tabset>
+                <tab heading="Instruments">
+                    <div class="instruments panel panel-default">
+                        <div class="instrument" >
+                            <button data-toggle="modal" data-target="#keyboardModal" class="btn btn-default">MIDI keyboard</button>
+                            <button class="btn btn-default" >Guitar fretboard</button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="instrument" >
-                    Accidentals:<br>
-                    <div class="accidentals btn-group">
-                        <button class="accidental-sharp item btn btn-default">#</button>
-                        <button class="accidental-none item btn btn-default">none</button>
-                        <button class="accidental-flat item btn btn-default">b</button>
-                    </div>
-                </div>
-
-                <div class="instrument" >
-                    Instrument:<br>
-
-                <select class="form-control" ng-model="activeTrack.instrument"
-                        ng-options="instr.instrument for (index, instr) in editor.getAllInstruments()"></select>
-                </div>
-
-                <div class="row instrument">
-                    <div class="col-md-6" >
-                        Tempo:<br>
-                        <input style="width: 100px" type="number" class="form-control" ng-model="song.tempo"/>
-                    </div>
-                    <div class="col-md-6" >
-                        Octave shift:<br>
-                        <input style="width: 100px" type="number" class="form-control" ng-model="activeTrack.options.octaveShift"/>
-                    </div>
-                </div>
-            </div>
+                </tab>
+            </tabset>
         </div>
         <div class="view col-xs-9">
             <ul class="nav nav-tabs">
@@ -135,6 +146,22 @@
                 <canvas id='selectionCanvas'></canvas>
             </div>
             <div class="error"></div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="keyboardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 785px">
+        <div class="modal-content" style="background-color: #424242" ng-controller="KeyboardCtrl">
+            <div class="keyboard">
+            </div>
+            <div class="keyboard-controls">
+                <input ng-model="sustain" class="switch-checkbox" type="checkbox" name="onoffswitch" id="sustain-switch">
+                <label class="switch-label" for="sustain-switch">
+                    <div class="slider">
+
+                    </div>
+                </label>
+            </div>
         </div>
     </div>
 </div>

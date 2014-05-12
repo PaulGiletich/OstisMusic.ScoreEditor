@@ -3,8 +3,9 @@ define(function (require) {
     window.EditorCtrl = require('controller/EditorCtrl');
     window.FileCtrl = require('controller/FileCtrl');
     window.TrackViewCtrl = require('controller/TrackViewCtrl');
+    window.KeyboardCtrl = require('controller/KeyboardCtrl');
 
-    var app = angular.module("app", ['ui.select2']);
+    var app = angular.module("app", ['ui.bootstrap']);
     require(['domReady'], function(document){
         angular.bootstrap(document, ['app']);
     });

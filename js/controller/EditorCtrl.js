@@ -4,22 +4,9 @@ define(function (require) {
     var Instruments = require('instruments/all');
     var View = require('controller/TrackViewCtrl');
 
-
-    var c1 = new Model.Chord(4, [new Model.Note('C', 5), new Model.Note('E', 5), new Model.Note('G', 5)]);
-    var c2 = new Model.Chord(4, [new Model.Note('F', 5), new Model.Note('B', 5)]);
-    var c3 = new Model.Chord(2, [new Model.Note('A', 4), new Model.Note('C', 5), new Model.Note('E', 5)]);
-    var rest = new Model.Rest(1);
-    var bar = new Model.Bar([c1, c2, c3, rest], "4/4");
-    var bar2 = new Model.Bar([c2, c1, c3], "4/4");
-    var track = new Model.Track([bar], new Model.Instrument("distortion_guitar"), {octaveShift: -2});
-    var track2 = new Model.Track([bar2], new Model.Instrument("electric_guitar_clean"));
-    var song = new Model.Song([track, track2], 120);
-    window.song = song;
-
-    var EditorCtrl =  function ($scope) {
+    var EditorCtrl =  function ($scope, $modal) {
         var self = this;
-        $scope.song = song;//new Model.Song();
-        $scope.activeTrack = song.tracks[0];
+        $scope.song = new Model.Song();
         self.view = new View($scope);
 
         self.noteDuration = 4;
@@ -27,7 +14,7 @@ define(function (require) {
         init();
 
         $scope.$watch('activeTrack.instrument', function(){
-            SongPlayer.updateInstruments(song);
+            SongPlayer.updateInstruments($scope.song);
         }, true);
 
         function init(){
@@ -59,6 +46,7 @@ define(function (require) {
             var track = new Model.Track([bar], new Model.Instrument("acoustic_grand_piano"));
             $scope.song.tracks.push(track);
             $scope.activeTrack = track;
+            return track;
         };
 
         self.removeTrack = function(track){
@@ -76,28 +64,28 @@ define(function (require) {
             $('.stop').click(function(){
                 SongPlayer.stop();
             });
-
-            $('.accidental-sharp').click(function setNoteSharp(){
-                var chord = $scope.song.getTickable(self.view.getSelectedNote());
-                chord.notes[0].flat = false;
-                chord.notes[0].sharp = true;//TODO: change when making editable chords
-                $.event.trigger('songChanged');
-                self.player.playNote([self.view.getTickable(self.view.getSelectedNote()).view]);
-            });
-            $('.accidental-flat').click(function setNoteFlat(){
-                var chord = $scope.song.getTickable(self.view.getSelectedNote());
-                chord.notes[0].flat = true;
-                chord.notes[0].sharp = false;
-                $.event.trigger('songChanged');
-                self.player.playNote([self.view.getTickable(self.view.getSelectedNote()).view]);
-            });
-            $('.accidental-none').click(function setNoteDefault(){
-                var chord = $scope.song.getTickable(self.view.getSelectedNote());
-                chord.notes[0].flat = false;
-                chord.notes[0].sharp = false;
-                $.event.trigger('songChanged');
-                self.player.playNote([self.view.getTickable(self.view.getSelectedNote()).view]);
-            });
+//
+//            $('.accidental-sharp').click(function setNoteSharp(){
+//                var chord = $scope.song.getTickable(self.view.getSelectedNote());
+//                chord.notes[0].flat = false;
+//                chord.notes[0].sharp = true;//TODO: change when making editable chords
+//                $.event.trigger('songChanged');
+//                self.player.playNote([self.view.getTickable(self.view.getSelectedNote()).view]);
+//            });
+//            $('.accidental-flat').click(function setNoteFlat(){
+//                var chord = $scope.song.getTickable(self.view.getSelectedNote());
+//                chord.notes[0].flat = true;
+//                chord.notes[0].sharp = false;
+//                $.event.trigger('songChanged');
+//                self.player.playNote([self.view.getTickable(self.view.getSelectedNote()).view]);
+//            });
+//            $('.accidental-none').click(function setNoteDefault(){
+//                var chord = $scope.song.getTickable(self.view.getSelectedNote());
+//                chord.notes[0].flat = false;
+//                chord.notes[0].sharp = false;
+//                $.event.trigger('songChanged');
+//                self.player.playNote([self.view.getTickable(self.view.getSelectedNote()).view]);
+//            });
 
             $('.tickable.note').click(function(event){
                 $('.tickables .tickable').removeClass('active');
@@ -113,87 +101,97 @@ define(function (require) {
 
             $(document)
                 .on('playerReady', function () {
-                    $scope.playerReady = true;
+                    $scope.$apply(function(){
+                        $scope.playerReady = true;
+                    })
                 })
                 .on('playerLoading', function () {
-                    $scope.playerReady = false;
+                    $scope.$apply(function(){
+                        $scope.playerReady = false;
+                    });
                 });
         }
 
         function initHotkeys(){
 
             $(document).bind('keydown', 'del', function(){
-                $scope.song.removeTickable(self.view.getSelectedNote());
-                $.event.trigger('songChanged');
+                $scope.$apply(function(){
+                    _.each($scope.selection, function(ti){
+                        ti.remove();
+                    });
+                    $scope.selection = null;
+                });
             });
-
-            $(document).bind('keydown', 'left', function(){
-                self.view.setSelectedNote(self.view.getSelectedNote()-1);
-            });
-
-            $(document).bind('keydown', 'right', function(){
-                self.view.setSelectedNote(self.view.getSelectedNote()+1);
-            });
-
-            $(document).bind('keydown', 'ctrl+up', function(e){
-                e.preventDefault();
-                var chord = $scope.song.getTickable(self.view.getSelectedNote());//TODO change when making editable chords
-                for(var i = 0; i < chord.notes.length; i++){
-                    var note = chord.notes[i];
-                    var newKey = Util.getNoteNumberByKey(note.key) + 1;
-                    if(newKey < 7){
-                        note.key = Util.getKeyByNumber(newKey);
-                    }
-                    else {
-                        note.octave++;
-                        note.key = Util.getKeyByNumber(newKey % 7);
-                    }
-                }
-                $.event.trigger('songChanged');
-            });
-
-            $(document).bind('keydown', 'ctrl+down', function(e){
-                e.preventDefault();
-                var chord = $scope.song.getTickable(self.view.getSelectedNote());//TODO change when making editable chords
-                for(var i = 0; i < chord.notes.length; i++){
-                    var note = chord.notes[i];
-                    var newKey = Util.getNoteNumberByKey(note.key) - 1;
-                    if(newKey >= 0){
-                        note.key = Util.getKeyByNumber(newKey);
-                    }
-                    else {
-                        note.octave--;
-                        note.key = Util.getKeyByNumber(7 + newKey % 7);
-                    }
-                }
-                $.event.trigger('songChanged');
-            });
-
-            $(document).bind('keydown', 'ctrl+right', function(e){
-                e.preventDefault();
-                var selectedIndex = self.view.getSelectedNote();
-                if(self.view.getTickable(selectedIndex+1) == null) return;
-
-                var tmp = $scope.song.tickables[selectedIndex];
-                $scope.song.tickables[selectedIndex] = $scope.song.tickables[selectedIndex+1];
-                $scope.song.tickables[selectedIndex+1] = tmp;
-
-                self.view.setSelectedNote(self.view.getSelectedNote()+1);
-                $.event.trigger('songChanged');
-            });
-
-            $(document).bind('keydown', 'ctrl+left', function(e){
-                e.preventDefault();
-                var selectedIndex = self.view.getSelectedNote();
-                if(self.view.getTickable(selectedIndex-1) == null) return;
-
-                var tmp = $scope.song.tickables[selectedIndex];
-                $scope.song.tickables[selectedIndex] = $scope.song.tickables[selectedIndex-1];
-                $scope.song.tickables[selectedIndex-1] = tmp;
-                self.view.setSelectedNote(self.view.getSelectedNote()-1);
-                $.event.trigger('songChanged');
-            });
+//
+//            $(document).bind('keydown', 'left', function(){
+//                self.view.setSelectedNote(self.view.getSelectedNote()-1);
+//            });
+//
+//            $(document).bind('keydown', 'right', function(){
+//                self.view.setSelectedNote(self.view.getSelectedNote()+1);
+//            });
+//
+//            $(document).bind('keydown', 'ctrl+up', function(e){
+//                e.preventDefault();
+//                var chord = $scope.song.getTickable(self.view.getSelectedNote());//TODO change when making editable chords
+//                for(var i = 0; i < chord.notes.length; i++){
+//                    var note = chord.notes[i];
+//                    var newKey = Util.getNoteNumberByKey(note.key) + 1;
+//                    if(newKey < 7){
+//                        note.key = Util.getKeyByNumber(newKey);
+//                    }
+//                    else {
+//                        note.octave++;
+//                        note.key = Util.getKeyByNumber(newKey % 7);
+//                    }
+//                }
+//                $.event.trigger('songChanged');
+//            });
+//
+//            $(document).bind('keydown', 'ctrl+down', function(e){
+//                e.preventDefault();
+//                var chord = $scope.song.getTickable(self.view.getSelectedNote());//TODO change when making editable chords
+//                for(var i = 0; i < chord.notes.length; i++){
+//                    var note = chord.notes[i];
+//                    var newKey = Util.getNoteNumberByKey(note.key) - 1;
+//                    if(newKey >= 0){
+//                        note.key = Util.getKeyByNumber(newKey);
+//                    }
+//                    else {
+//                        note.octave--;
+//                        note.key = Util.getKeyByNumber(7 + newKey % 7);
+//                    }
+//                }
+//                $.event.trigger('songChanged');
+//            });
+//
+//            $(document).bind('keydown', 'ctrl+right', function(e){
+//                e.preventDefault();
+//                var selectedIndex = self.view.getSelectedNote();
+//                if(self.view.getTickable(selectedIndex+1) == null) return;
+//
+//                var tmp = $scope.song.tickables[selectedIndex];
+//                $scope.song.tickables[selectedIndex] = $scope.song.tickables[selectedIndex+1];
+//                $scope.song.tickables[selectedIndex+1] = tmp;
+//
+//                self.view.setSelectedNote(self.view.getSelectedNote()+1);
+//                $.event.trigger('songChanged');
+//            });
+//
+//            $(document).bind('keydown', 'ctrl+left', function(e){
+//                e.preventDefault();
+//                var selectedIndex = self.view.getSelectedNote();
+//                if(self.view.getTickable(selectedIndex-1) == null) return;
+//
+//                var tmp = $scope.song.tickables[selectedIndex];
+//                $scope.song.tickables[selectedIndex] = $scope.song.tickables[selectedIndex-1];
+//                $scope.song.tickables[selectedIndex-1] = tmp;
+//                self.view.setSelectedNote(self.view.getSelectedNote()-1);
+//                $.event.trigger('songChanged');
+//            });
         }
+
+        this.newTrack();
 
     };
 

@@ -18,14 +18,21 @@ define(function(require){
         };
 
         function getTones(chord, options) {
-            var tones = _.map(chord.notes, function (note) {
+            if(chord instanceof Array){
+                return _.map(chord, function(tone){
+                    if (options.octaveShift) {
+                        tone += options.octaveShift * 12;
+                    }
+                    return tone;
+                });
+            }
+            return _.map(chord.notes, function (note) {
                 var tone = MIDI.keyToNote[note.key + note.octave];
                 if (options.octaveShift) {
                     tone += options.octaveShift * 12;
                 }
                 return tone;
             });
-            return tones;
         }
 
         self.startChord = function(chord, options){
@@ -46,7 +53,7 @@ define(function(require){
             }
         };
 
-        self.startTone = function(key, octave, delay){
+        self.startTone = function(key, octave, delay, options){
             delay = delay ? delay : 0;
             var noteValue = MIDI.keyToNote[key + octave];
             try {
@@ -56,7 +63,7 @@ define(function(require){
             }
         };
 
-        self.endTone = function(key, octave, delay){
+        self.endTone = function(key, octave, delay, options){
             delay = delay ? delay : 0;
             var noteValue = MIDI.keyToNote[key + octave];
             try{

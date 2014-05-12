@@ -1,48 +1,28 @@
-define(['../model/all', 'es6!song-player'], function(Model, SongPlayer){
-    "use strict";
+define(['../model/all', 'es6!song-player', 'es6!instruments/basic-instrument'],
+function(Model, SongPlayer, BasicInstrument){
 
-    var RestCreationInstrument = function(editor, $scope){
+    class RestCreationInstrument extends BasicInstrument {
+        constructor (editor, $scope) {
+            super(editor, $scope);
+        };
 
-        $scope.scoreClick = function(e){
-            var coords = editor.view.toLocalCoords(e);
-            var note = editor.view.findNote(coords);
-            if(note){
-                noteClicked(note);
-                return;
-            }
-            var lastNote = editor.view.findPreviousNote(coords);
-            if(lastNote){
-                addRest(coords);
+        emptySpaceClicked (point) {
+            super.emptySpaceClicked(point);
+            var rest = new Model.Rest(this.editor.noteDuration);
+
+            var prevNote = this.editor.view.findPreviousNote(point);
+            //if track empty ( todo )
+            if(!prevNote && !this.$scope.activeTrack.bars[0].tickables.length){
+                this.$scope.activeTrack.insertTickable(0, rest);
+            } else {
+                this.$scope.activeTrack.insertTickable(prevNote.index+1, rest);
             }
         };
 
-        this.mouseMove = function(e){
-            var coords = editor.view.toLocalCoords(e);
-            var note = editor.view.findNote(coords);
-            var prevNote = editor.view.findPreviousNote(coords);
-            if(note){
-                editor.view.highlightNote(note.view);
-            }
-            else if (prevNote){
-                var x = prevNote.view.getAbsoluteX() + prevNote.view.getBoundingBox().w + 15;
-                var y = coords.y;
-                editor.view.phantomRest({x:x, y:y});
-            }
+        emptySpaceHovered (point) {
+            this.editor.view.phantomRest(point);
         };
-
-        function noteClicked(note){
-            $(document).trigger('playChord', note.index);
-            editor.view.setSelectedNote(note.index);
-        }
-
-        function addRest(point){
-            var prevNote = editor.view.findPreviousNote(point);
-            var tickable = new Model.Rest(editor.noteDuration);
-            editor.song.insertTickable(prevNote.index+1, tickable);
-            editor.update();
-            editor.view.setSelectedNote(prevNote.index+1);
-        }
-    };
+    }
 
     return RestCreationInstrument;
 });

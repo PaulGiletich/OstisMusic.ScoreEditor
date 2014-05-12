@@ -1,51 +1,28 @@
-define(['model/all', 'es6!song-player'], function(Model, SongPlayer){
-    "use strict";
+define(['model/all', 'es6!song-player', 'es6!instruments/basic-instrument'], function(Model, SongPlayer, BasicInstrument){
 
-    var NoteCreationInstrument = function(editor, $scope){
-
-        this.scoreClick = function(e){
-            var coords = editor.view.toLocalCoords(e);
-            var note = editor.view.findNote(coords);
-            if(note){
-                noteClicked(note);
-                return;
-            }
-            addNote(coords);
+    class NoteCreationInstrument extends BasicInstrument {
+        constructor (editor, $scope) {
+            super(editor, $scope);
         };
 
-        this.mouseMove = function(e){
-            var coords = editor.view.toLocalCoords(e);
-            var note = editor.view.findNote(coords);
-            var prevNote = editor.view.findPreviousNote(coords);
-            if(note){
-                editor.view.highlightNote(note.view);
-            }
-            else {
-                coords.y = coords.y - coords.y % 5;
-                //coords.x = prevNote.view.getAbsoluteX() + prevNote.view.getBoundingBox().w + 15;
-                editor.view.phantomNote(coords);
-            }
-        };
+        emptySpaceClicked (point) {
+            super.emptySpaceClicked(point);
+            var note = this.editor.view.getNewNoteByPos(point);
+            var chord = new Model.Chord(this.editor.noteDuration, [note]);
 
-        function noteClicked(note){
-            var ti = $scope.activeTrack.tickableByIndexInTrack(note.index);
-            SongPlayer.play($scope.song, ti, ti, true);
-            $scope.selection = [ti, ti];
-        }
-
-        function addNote(point){
-            var note = editor.view.getNewNoteByPos(point);
-            var chord = new Model.Chord(editor.noteDuration, [note]);
-
-            var prevNote = editor.view.findPreviousNote(point);
+            var prevNote = this.editor.view.findPreviousNote(point);
             //if track empty ( todo )
-            if(!prevNote && !$scope.activeTrack.bars[0].tickables.length){
-                $scope.activeTrack.insertTickable(0, chord);
+            if(!prevNote && !this.$scope.activeTrack.bars[0].tickables.length){
+                this.$scope.activeTrack.insertTickable(0, chord);
             } else {
-                $scope.activeTrack.insertTickable(prevNote.index+1, chord);
+                this.$scope.activeTrack.insertTickable(prevNote.index+1, chord);
             }
-        }
-    };
+        };
+
+        emptySpaceHovered (coords) {
+            this.editor.view.phantomNote({x: coords.x, y: coords.y - coords.y % 5});
+        };
+    }
 
     return NoteCreationInstrument;
 });
