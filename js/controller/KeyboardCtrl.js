@@ -3,7 +3,7 @@ define(function(require){
     var Util = require('util');
     var KeyboardJS = require('keyboard-js');
 
-    var KeyboardCtrl = function($scope){
+    var KeyboardCtrl = function($scope, $modal){
 
         //todo - this is temporary solution of problem that will be revolved when i move rendering of this to angular
         window.keyboardCtrl = this;
@@ -11,6 +11,12 @@ define(function(require){
         $scope.notesCount = 32;
         $scope.startOctave = 4;
         $scope.sustain = false;
+
+        KeyboardJS.on('space', function(){
+            $scope.$apply(function(){
+                $scope.sustain = !$scope.sustain;
+            })
+        });
 
         this.update = function () {
             $('.keyboard').empty();
@@ -37,11 +43,27 @@ define(function(require){
             $key.mouseup(stopKey);
 
             var fired = false;
+
+            //easter-egg
+            var timesPressed = 0;
+            setInterval(function(){
+                timesPressed = 0;
+            }, 10000);
             function playKey(){
                 if(!fired) {
                     $key.addClass('key-pressed');
                     Player.startTone(note, octave);
                     fired = true;
+
+                    //easter-egg
+                    timesPressed++;
+                    if(timesPressed > 30){
+                        timesPressed = 0;
+                        var modalInstance = $modal.open({
+                            template: '<div style="text-align: center"><img src="images/emma.jpg"></div>',
+                            size: 'sm'
+                        });
+                    }
                 }
             }
 

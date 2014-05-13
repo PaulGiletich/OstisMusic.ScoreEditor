@@ -58,7 +58,7 @@ define(function (require) {
         function initButtons(){
 
             $('.play').click(function(){
-                SongPlayer.play($scope.song);
+                SongPlayer.play($scope.song, $scope.selection[0]);
             });
 
             $('.stop').click(function(){
