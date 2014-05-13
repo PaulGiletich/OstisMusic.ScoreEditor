@@ -6,7 +6,7 @@ function(Util, Model, Parser){
      */
     var TrackViewCtrl = function ($scope){
         var self = this;
-        
+
         var canvas = $("#canvas")[0];
         var hoverCanvas = $("#hoverCanvas")[0];
         var selectionCanvas = $("#selectionCanvas")[0];
@@ -223,7 +223,9 @@ function(Util, Model, Parser){
         }, true);
 
         $(document).on('chordPlayed', function(e, i){
-            self.highlightNote(self.getTickable(i.indexInTrack).view);
+            if($scope.activeTrack == i.track){
+                self.highlightNote(self.getTickable(i.indexInTrack).view);
+            }
         });
 
         window.addEventListener('resize', onResize);
