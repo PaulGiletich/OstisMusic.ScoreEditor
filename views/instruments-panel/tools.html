@@ -1,0 +1,51 @@
+<tabset justified="true">
+    <tab heading="Tools">
+        <div class="instruments panel panel-default">
+            <div class="instrument" >
+                Tickable type:<br>
+                <div class="tickables btn-group">
+                    <button class="tickable note btn btn-default active">Note</button>
+                    <button class="tickable rest btn btn-default" >Rest</button>
+                </div>
+            </div>
+
+            <div class="instrument" >
+                Duration:<br>
+                <div class="durations btn-group">
+                    <button ng-repeat="i in [1,2,4,8,16,32]"
+                            class="item btn btn-default {{editor.noteDuration == i ? 'active': ''}}"
+                            value="{{i}}"
+                            ng-click="editor.setNoteDuration(i)"
+                            >{{i}}</button>
+                </div>
+            </div>
+
+            <div class="instrument" >
+                Accidentals:<br>
+                <div class="accidentals btn-group">
+                    <button class="accidental-sharp item btn btn-default">#</button>
+                    <button class="accidental-none item btn btn-default">none</button>
+                    <button class="accidental-flat item btn btn-default">b</button>
+                </div>
+            </div>
+
+            <div class="instrument" >
+                Instrument:<br>
+
+                <select class="form-control" ng-model="activeTrack.instrument"
+                        ng-options="instr.instrument for (index, instr) in editor.getAllInstruments()"></select>
+            </div>
+
+            <div class="row instrument">
+                <div class="col-md-6" >
+                    Tempo:<br>
+                    <input style="width: 100px" type="number" class="form-control" ng-model="song.tempo"/>
+                </div>
+                <div class="col-md-6" >
+                    Octave shift:<br>
+                    <input style="width: 100px" type="number" class="form-control" ng-model="activeTrack.options.octaveShift"/>
+                </div>
+            </div>
+        </div>
+    </tab>
+</tabset>
