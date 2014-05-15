@@ -1,4 +1,6 @@
-libs-src/
 node-modules/
+node_modules/
 .idea/
 *.iml
+bower_components/
+

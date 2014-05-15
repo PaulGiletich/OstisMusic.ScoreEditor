@@ -1,29 +1,33 @@
 {
-  "name": "OstisMusic.ScoreEditor",
-  "version": "0.0.0",
-  "homepage": "https://github.com/PaulGiletich/OstisMusic.ScoreEditor",
-  "authors": [
-    "Pavel_Hiletsich <Pavel_Hiletsich@epam.com>"
-  ],
-  "main": "index.htm",
-  "license": "MIT",
-  "private": true,
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "/lib",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "angularAMD": "~0.1.0",
-    "requirejs": "~2.1.11",
-    "angular-route": "~1.2.16",
-    "angular-ui-router": "~0.2.10",
-    "requirejs-domready": "~2.0.1",
-    "es6": "*",
-    "angular-ui-select2": "~0.0.5",
-    "angular-bootstrap": "~0.11.0"
-  }
+    "name": "OstisMusic.ScoreEditor",
+    "version": "0.0.0",
+    "homepage": "https://github.com/PaulGiletich/OstisMusic.ScoreEditor",
+    "authors": [
+        "Pavel_Hiletsich <Pavel_Hiletsich@epam.com>"
+    ],
+    "main": "index.htm",
+    "license": "MIT",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "requirejs": "~2.1.11",
+        "requirejs-domready": "~2.0.1",
+        "es6": "*",
+        "angular-bootstrap": "~0.11.0",
+        "bootstrap": "~3.1.1",
+        "MIDI.js": "https://github.com/mudcube/MIDI.js.git",
+        "jquery": "~2.1.1",
+        "jquery.hotkeys": "jeresig/jquery.hotkeys#~0.1.0",
+        "midi-js-soundfonts": "https://github.com/gleitz/midi-js-soundfonts.git",
+        "underscore": "~1.6.0",
+        "vexflow": "0xfe/vexflow",
+        "KeyboardJS": "~0.4.2",
+        "angular": "~1.2.16"
+    }
 }

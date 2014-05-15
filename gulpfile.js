@@ -10,15 +10,15 @@ gulp.task('less', function () {
         .pipe(concat('main.css'))
         .pipe(gulp.dest('./build/css/'));
 });
-//
-//gulp.task('rjs', function() {
-//    rjs({
-//        optimize: true,
-//        baseUrl:'js',
-//        mainConfigFile: 'js/main.js',
-//        out: 'main.js'
-//    })
-//    .pipe(gulp.dest('./build/js/'));
-//});
+
+gulp.task('rjs', function() {
+    rjs({
+        optimize: true,
+        baseUrl:'js',
+        mainConfigFile: 'js/main.js',
+        out: 'main.js'
+    })
+    .pipe(gulp.dest('./build/js/'));
+});
 
 gulp.task('default', ['less']);

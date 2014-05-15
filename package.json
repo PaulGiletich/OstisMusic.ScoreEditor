@@ -1,11 +1,19 @@
 {
   "name": "ostismusic-score-editor",
   "version": "0.0.2",
+  "scripts": {
+    "preinstall": "npm install -g bower && npm install -g http-server",
+    "postinstall": "bower install",
+    "start": "http-server -c-1"
+  },
   "devDependencies": {
     "gulp": "^3.6.1",
     "gulp-less": "^1.2.3",
     "path": "^0.4.9",
     "gulp-concat": "^2.2.0",
     "gulp-requirejs": "^0.1.3"
+  },
+  "dependencies": {
+    "express": "^4.2.0"
   }
 }
