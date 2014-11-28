@@ -1,5 +1,5 @@
 define(function(require){
-    var Util = require('util');
+    var Util = require('scripts/util');
 
     var defaultOptions = {
         octaveShift: 0

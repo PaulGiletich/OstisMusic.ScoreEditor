@@ -3,14 +3,14 @@ define(function(require){
     //      can't wait for ES6 modules :(
 
     return {
-        Note    :   require('model/note'),
-        Chord   :   require('model/chord'),
-        BarNote :   require('model/bar-note'),
-        Bar     :   require('model/bar'),
-        TimeSignature:   require('model/time-signature'),
-        Rest    :   require('model/rest'),
-        Song    :   require('model/song'),
-        Instrument:   require('model/instrument'),
-        Track   :   require('es6!model/track')
+        Note    :   require('scripts/model/note'),
+        Chord   :   require('scripts/model/chord'),
+        BarNote :   require('scripts/model/bar-note'),
+        Bar     :   require('scripts/model/bar'),
+        TimeSignature:   require('scripts/model/time-signature'),
+        Rest    :   require('scripts/model/rest'),
+        Song    :   require('scripts/model/song'),
+        Instrument:   require('scripts/model/instrument'),
+        Track   :   require('es6!scripts/model/track')
     };
 });

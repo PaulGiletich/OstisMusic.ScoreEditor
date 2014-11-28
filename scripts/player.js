@@ -1,5 +1,5 @@
 define(function(require){
-    var Model = require('model/all');
+    var Model = require('scripts/model/all');
 
     var Player = function(){
         var self = this;

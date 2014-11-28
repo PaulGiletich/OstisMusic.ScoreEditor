@@ -1,6 +1,6 @@
 define(function(require){
-    var Util = require('util');
-    var Serializer = require('serializer/json-serializer');
+    var Util = require('scripts/util');
+    var Serializer = require('scripts/serializer/json-serializer');
 
     var FileCtrl =  function($scope){
 

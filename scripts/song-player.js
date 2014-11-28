@@ -1,5 +1,5 @@
 define(function(require){
-    var Player = require('player');
+    var Player = require('scripts/player');
 
     var playingSequenceId = null;
 

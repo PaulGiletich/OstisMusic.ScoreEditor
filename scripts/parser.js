@@ -1,4 +1,4 @@
-define(['model/all'], function(Model){
+define(['scripts/model/all'], function(Model){
 
     var Parser = function (){
 

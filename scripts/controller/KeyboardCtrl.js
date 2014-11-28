@@ -1,6 +1,6 @@
 define(function(require){
-    var Player = require('es6!player');
-    var Util = require('util');
+    var Player = require('es6!scripts/player');
+    var Util = require('scripts/util');
     var KeyboardJS = require('keyboard-js');
 
     var KeyboardCtrl = function($scope, $modal){

@@ -1,8 +1,8 @@
 define(function (require) {
-    var Model = require('model/all');
-    var SongPlayer = require('es6!song-player');
-    var Instruments = require('instruments/all');
-    var View = require('controller/TrackViewCtrl');
+    var Model = require('scripts/model/all');
+    var SongPlayer = require('es6!scripts/song-player');
+    var Instruments = require('scripts/instruments/all');
+    var View = require('scripts/controller/TrackViewCtrl');
 
     var EditorCtrl =  function ($scope, $modal) {
         var self = this;

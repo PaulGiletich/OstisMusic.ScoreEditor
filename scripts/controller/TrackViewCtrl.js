@@ -1,5 +1,5 @@
-define(['../util', 'model/all', 'es6!parser', 'canvas-extensions'],
-function(Util, Model, Parser){
+define(['../util', 'scripts/model/all', 'es6!scripts/parser', 'scripts/canvas-extensions', 'vextab'],
+function(Util, Model, Parser, vextab){
 
     /**
      * @constructor
@@ -12,8 +12,8 @@ function(Util, Model, Parser){
         var selectionCanvas = $("#selectionCanvas")[0];
 
         var renderer = new Vex.Flow.Renderer(canvas, Vex.Flow.Renderer.Backends.CANVAS);
-        var artist = new Vex.Flow.Artist(0, 0, window.innerWidth); Vex.Flow.Artist.NOLOGO = true;
-        var vextab = new Vex.Flow.VexTab(artist);
+        var artist = new Artist(0, 0, window.innerWidth); Artist.NOLOGO = true;
+        var vextab = new VexTab(artist);
 
         var parser = new Parser();
 

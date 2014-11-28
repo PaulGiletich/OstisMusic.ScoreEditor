@@ -1,14 +1,9 @@
-Demo
-----
-
-https://rawgithub.com/PaulGiletich/OstisMusic.ScoreEditor/master/editor.htm
-
-Build
+Run
 -----
 
 
 ```
 npm install
-grunt
+npm start
 ```
 

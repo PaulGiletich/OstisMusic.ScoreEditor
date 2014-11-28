@@ -1,4 +1,4 @@
-define(['../model/all', 'es6!song-player'], function(Model, SongPlayer){
+define(['scripts/model/all', 'es6!scripts/song-player'], function(Model, SongPlayer){
 
     class BasicInstrument {
         constructor(editor, $scope){

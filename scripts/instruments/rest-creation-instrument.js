@@ -1,4 +1,4 @@
-define(['../model/all', 'es6!song-player', 'es6!instruments/basic-instrument'],
+define(['../model/all', 'es6!scripts/song-player', 'es6!scripts/instruments/basic-instrument'],
 function(Model, SongPlayer, BasicInstrument){
 
     class RestCreationInstrument extends BasicInstrument {

@@ -26,7 +26,6 @@
         "jquery.hotkeys": "jeresig/jquery.hotkeys#~0.1.0",
         "midi-js-soundfonts": "https://github.com/gleitz/midi-js-soundfonts.git",
         "underscore": "~1.6.0",
-        "vexflow": "0xfe/vexflow",
         "KeyboardJS": "~0.4.2",
         "angular": "~1.2.16"
     }
